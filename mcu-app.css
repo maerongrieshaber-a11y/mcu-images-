@@ -1,0 +1,421 @@
+/* MCU Timeline - styles */
+
+  #mcu-app {
+    font-family: 'Inter', system-ui, sans-serif; color: #EDEAE3; min-height: 100vh; padding-bottom: 60px; position: relative;
+    display: flex; flex-direction: column;
+    background-color: #08070C;
+    isolation: isolate;
+  }
+  #mcu-app::before {
+    filter: hue-rotate(var(--bg-hue, 0deg)); transition: filter .8s ease-out; will-change: filter;
+    content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: url('https://maerongrieshaber-a11y.github.io/mcu-images-/fond_site.jpg');
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    transform: translateZ(0);
+  }
+  #mcu-app * { box-sizing: border-box; }
+  /* Le footer reste toujours colle en bas : #mcu-app est un flex-column sur toute la
+     hauteur de l'ecran (min-height:100vh), la zone de contenu (#mcu-view-root) s'etire
+     pour occuper l'espace restant (flex:1), et le footer garde sa hauteur naturelle
+     juste en dessous, meme quand une page a tres peu de contenu. */
+  #mcu-app > #mcu-nav-root { flex: 0 0 auto; }
+  #mcu-app > #mcu-view-root { flex: 1 0 auto; }
+  #mcu-app > #mcu-footer-root { flex: 0 0 auto; }
+  #mcu-app .disp { font-family: 'Bebas Neue', 'Inter', sans-serif; letter-spacing: 0.03em; }
+  #mcu-app .mono { font-family: 'JetBrains Mono', monospace; }
+  #mcu-app a, #mcu-app button { cursor: pointer; }
+  #mcu-app button { font-family: inherit; border: none; background: none; color: inherit; }
+  #mcu-app .navbar { position: sticky; top: 0; z-index: 30; background: rgba(10,9,13,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid #232028; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  #mcu-app .navbar .logo { font-size: 22px; }
+  #mcu-app .navbar .logo .gold { color: #C9A24B; }
+  #mcu-app .navtabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  #mcu-app .navtabs button { padding: 6px 12px; font-size: 13px; border-radius: 6px; }
+  #mcu-app .navtabs button.active { background: #C9A24B; color: #0A090D; font-weight: 600; }
+  #mcu-app .navtabs button:not(.active) { color: #B7B2AA; }
+  /* Badge profil distinct dans le header : avatar rond avec bordure travaillee, separe
+     visuellement des autres onglets pour bien le faire ressortir. */
+  #mcu-app .navtabs button.mcu-nav-profile { padding: 3px; margin-left: 8px; border-radius: 999px; background: #131117; border: 2px solid #3a3642; display: inline-flex; align-items: center; justify-content: center; }
+  #mcu-app .navtabs button.mcu-nav-profile:hover { border-color: #C9A24B; }
+  #mcu-app .navtabs button.mcu-nav-profile.active { background: #131117; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201,162,75,0.18); }
+  #mcu-app .mcu-nav-profile-avatar { width: 30px; height: 30px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#5B6FE8,#A11D33); flex-shrink: 0; }
+
+  /* Page profil : hero centre, avatar en "anneau" degrade (plus de bloc gris carre autour
+     de la photo), pseudo/bio centres, top 5 classe avec numeros visibles. */
+  #mcu-app .mcu-profile-hero { background: radial-gradient(circle at 50% 0%, rgba(91,111,232,0.14), rgba(201,162,75,0.06) 60%, transparent); border: 1px solid #232028; border-radius: 26px; padding: 36px 24px 28px; margin-bottom: 26px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+  #mcu-app .mcu-avatar-ring { width: 132px; height: 132px; border-radius: 50%; padding: 4px; background: linear-gradient(135deg, #C9A24B, #5B6FE8); box-shadow: 0 16px 36px -10px rgba(0,0,0,0.65); position: relative; }
+  #mcu-app .mcu-avatar-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #131117; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+  #mcu-app .mcu-avatar-edit { position: absolute; bottom: 2px; right: 2px; background: #C9A24B; color: #08070C; border-radius: 50%; width: 30px; height: 30px; border: 2px solid #08070C; font-size: 13px; cursor: pointer; }
+  #mcu-app .mcu-profile-name-input { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 24px; background: none; border: none; border-bottom: 1px solid transparent; color: #EDEAE3; padding: 4px 2px; text-align: center; width: 100%; max-width: 360px; }
+  #mcu-app .mcu-profile-name-input:hover, #mcu-app .mcu-profile-name-input:focus { border-bottom-color: #2a2732; outline: none; }
+  #mcu-app .mcu-profile-bio-input { font-family: 'Inter', system-ui, sans-serif; font-size: 13.5px; color: #B7B2AA; background: none; border: none; text-align: center; width: 100%; max-width: 420px; resize: none; padding: 4px 2px; border-bottom: 1px solid transparent; }
+  #mcu-app .mcu-profile-bio-input:hover, #mcu-app .mcu-profile-bio-input:focus { border-bottom-color: #2a2732; outline: none; }
+  #mcu-app .mcu-toppick-row { display: flex; align-items: center; gap: 14px; padding: 10px 14px; }
+  #mcu-app .mcu-toppick-rank { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: #C9A24B; width: 36px; text-align: center; flex-shrink: 0; text-shadow: 0 0 12px rgba(201,162,75,0.5); }
+  #mcu-app .mcu-toppick-poster { width: 46px; height: 62px; border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+
+  /* Top 5 en podium : grandes affiches propres (pas de fond gris), taille decroissante
+     selon le classement, badge de rang superpose directement sur l'affiche. */
+  #mcu-app .mcu-podium { display: flex; align-items: flex-end; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 20px auto 8px; max-width: 720px; }
+  #mcu-app .mcu-podium-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #mcu-app .mcu-podium-poster-wrap { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 2/3; box-shadow: 0 14px 30px -10px rgba(0,0,0,0.65); cursor: pointer; background: #0A090D; }
+  #mcu-app .mcu-podium-poster-wrap:hover { box-shadow: 0 18px 38px -10px rgba(0,0,0,0.8); }
+  #mcu-app .mcu-podium-rank { position: absolute; top: -8px; left: -8px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; background: #C9A24B; color: #08070C; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+  #mcu-app .mcu-podium-title { font-size: 12px; color: #D8D4CB; text-align: center; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #mcu-app .mcu-podium-controls { display: flex; gap: 8px; }
+  #mcu-app .mcu-podium-controls button { font-size: 11px; color: #9AA0AA; background: none; border: none; cursor: pointer; }
+  #mcu-app .mcu-podium-controls button:hover { color: #EDEAE3; }
+
+  /* Page Multivers : panneaux "realite" colores, avec icone dediee et effet de survol. */
+  #mcu-app .mcu-reality-card { display: flex; gap: 20px; align-items: flex-start; border: 1px solid #232028; border-radius: 18px; padding: 22px 24px; position: relative; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  #mcu-app .mcu-reality-card:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -14px rgba(0,0,0,0.6); }
+  #mcu-app .mcu-reality-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+  @media (max-width: 640px) {
+    #mcu-app .mcu-reality-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+
+  /* Refonte Multivers : frise de lore + grille de "realites" en cartes visuelles. */
+  #mcu-app .mcu-lore-steps { display: flex; gap: 0; overflow-x: auto; margin: 18px 0 8px; padding-bottom: 4px; }
+  #mcu-app .mcu-lore-step { flex: 1 1 200px; min-width: 190px; padding: 4px 18px; border-left: 2px solid #2a2732; position: relative; }
+  #mcu-app .mcu-lore-step:first-child { border-left: 2px solid #5B6FE8; }
+  #mcu-app .mcu-lore-step .mcu-lore-num { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: #5B6FE8; line-height: 1; }
+  #mcu-app .mcu-lore-step .mcu-lore-title { font-size: 13.5px; font-weight: 600; color: #EDEAE3; margin: 4px 0 4px; }
+  #mcu-app .mcu-lore-step .mcu-lore-desc { font-size: 11.5px; color: #8A8690; line-height: 1.4; }
+
+  #mcu-app .mcu-reality-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; margin-top: 6px; }
+  #mcu-app .mcu-reality-card2 { border-radius: 20px; padding: 22px; border: 1px solid #232028; display: flex; flex-direction: column; gap: 12px; transition: transform 0.25s ease, box-shadow 0.25s ease; position: relative; overflow: hidden; }
+  #mcu-app .mcu-reality-card2:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -16px rgba(0,0,0,0.65); }
+  #mcu-app .mcu-reality-emblem { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  #mcu-app .mcu-reality-tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.05em; padding: 2px 9px; border-radius: 999px; border: 1px solid currentColor; width: fit-content; }
+  #mcu-app .mcu-danger-dots span { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 3px; background: #2a2732; }
+  #mcu-app .v-row.sel .v-poster, #mcu-app .mcu-card.sel { outline: 3px solid #C9A24B; outline-offset: 2px; }
+  #mcu-app .mcu-bulkbar { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 45; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 22px; background: rgba(14,14,18,0.88); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.2); max-width: calc(100vw - 140px); }
+  #mcu-app .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  #mcu-app .hero { padding: 28px 0 20px; }
+  #mcu-app .hero h1 { font-size: 40px; line-height: 0.95; margin: 6px 0; }
+  #mcu-app .hero .crimson { color: #E0405A; }
+  #mcu-app .statbar { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; }
+  #mcu-app .statchip { background: #131117; border: 1px solid #232028; border-radius: 10px; padding: 8px 14px; }
+  #mcu-app .statchip .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #9AA0AA; }
+  #mcu-app .statchip .val { font-size: 20px; color: #E8C468; }
+  #mcu-app .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0; }
+  #mcu-app .filters input, #mcu-app .filters select { background: transparent; border: 1px solid #3A3640; border-radius: 6px; padding: 7px 10px; font-size: 13px; color: #EDEAE3; }
+  #mcu-app .filters select option { background: #131117; }
+  #mcu-app .timeline-h-outer { position: relative; overflow-x: auto; overflow-y: hidden; padding: 60px 20px 90px; scroll-snap-type: x proximity; }
+  #mcu-app .timeline-h-outer::-webkit-scrollbar { height: 6px; }
+  #mcu-app .timeline-h-outer::-webkit-scrollbar-thumb { background: #3A3640; border-radius: 3px; }
+  #mcu-app .timeline-h-track { display: flex; align-items: center; gap: 34px; position: relative; min-height: 260px; }
+  #mcu-app .timeline-h-line { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: linear-gradient(to right, #A11D33, #5B6FE8); transform: translateY(-1px); }
+  #mcu-app .t-card { flex-shrink: 0; scroll-snap-align: center; position: relative; cursor: pointer; transition: transform 0.25s ease; }
+  #mcu-app .t-card:hover { transform: translateY(-4px) scale(1.03); }
+  #mcu-app .t-dot { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; border-radius: 50%; background: #0A090D; border: 2px solid #C9A24B; transform: translate(-50%, -50%); z-index: 2; }
+  #mcu-app .t-connector { position: absolute; left: 50%; width: 1px; background: #3A3640; transform: translateX(-50%); }
+  #mcu-app .t-poster { width: 100%; aspect-ratio: 3/4; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 8px; border: 1px solid #232028; }
+  #mcu-app .t-poster .glyph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 46px; opacity: 0.22; }
+  #mcu-app .t-title { font-size: 15px; margin-top: 6px; line-height: 1.1; }
+  #mcu-app .t-meta { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #9AA0AA; }
+  #mcu-app .t-watched-badge { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%; background: #2E7D5B; color: #fff; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #EDEAE3; box-shadow: 0 0 14px 3px rgba(46,125,91,0.7); z-index: 2; }
+  #mcu-app .t-quiz-badge { position: absolute; top: 10px; left: 10px; padding: 4px 9px; border-radius: 999px; background: rgba(201,162,75,0.95); color: #08070C; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 3px; z-index: 2; box-shadow: 0 0 10px 2px rgba(201,162,75,0.5); }
+  #mcu-app .v-watched-tag { display: inline-block; margin-top: 6px; background: #2E7D5B; color: #fff; font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; padding: 3px 12px; border-radius: 999px; box-shadow: 0 0 10px 2px rgba(46,125,91,0.55); border: 1px solid #4CD98A; }
+  #mcu-app .phase-sep { flex-shrink: 0; width: 2px; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  #mcu-app .phase-sep .line { width: 1px; flex: 1; background: #232028; }
+  #mcu-app .phase-sep .label { position: absolute; top: -34px; font-size: 20px; white-space: nowrap; left: 50%; transform: translateX(-50%); }
+  #mcu-app .timeline-v { max-width: 1080px; margin: 0 auto; padding: 30px 0; position: relative; }
+  #mcu-app .timeline-v-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, #A11D33, #5B6FE8); transform: translateX(-50%); box-shadow: 0 0 12px 1px rgba(201,162,75,0.25); }
+  #mcu-app .v-phase-header { text-align: center; position: relative; z-index: 3; }
+  #mcu-app .v-phase-header span { background: #08070C; padding: 4px 16px; border-radius: 999px; border: 1px solid #232028; }
+  #mcu-app .v-row { content-visibility: auto; contain-intrinsic-size: auto 400px; display: flex; position: relative; margin-bottom: 46px; width: 50%; cursor: pointer; }
+  #mcu-app .v-row.side-l { margin-right: 50%; padding-right: 54px; justify-content: flex-end; text-align: right; }
+  #mcu-app .v-row.side-r { margin-left: 50%; padding-left: 54px; justify-content: flex-start; text-align: left; }
+  #mcu-app .v-row-inner { display: flex; flex-direction: column; gap: 10px; max-width: 380px; transition: transform 0.25s ease; }
+  #mcu-app .v-row:hover .v-row-inner { transform: translateY(-4px); }
+  #mcu-app .v-row.side-l .v-row-inner { align-items: flex-end; }
+  #mcu-app .v-row.side-r .v-row-inner { align-items: flex-start; }
+  #mcu-app .v-dot { position: absolute; top: 26px; width: 16px; height: 16px; border-radius: 50%; background: #0A090D; border: 3px solid #C9A24B; box-shadow: 0 0 10px 2px rgba(201,162,75,0.45); z-index: 2; }
+  #mcu-app .v-row.side-l .v-dot { right: -8px; }
+  #mcu-app .v-row.side-r .v-dot { left: -8px; }
+  #mcu-app .v-stub { position: absolute; top: 33px; height: 2px; background: #C9A24B; opacity: 0.55; }
+  #mcu-app .v-row.side-l .v-stub { right: 0; width: 50px; }
+  #mcu-app .v-row.side-r .v-stub { left: 0; width: 50px; }
+  #mcu-app .v-poster { width: 220px; aspect-ratio: 2/3; border-radius: 10px; flex-shrink: 0; position: relative; overflow: hidden; border: 1px solid #232028; box-shadow: 0 14px 34px -10px rgba(0,0,0,0.6); }
+  #mcu-app .v-poster .glyph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 60px; opacity: 0.25; }
+  #mcu-app .card { background: #131117; border: 1px solid #232028; border-radius: 12px; padding: 16px; }
+  #mcu-app .btn { border: 1px solid #3A3640; border-radius: 6px; padding: 6px 12px; font-size: 12px; }
+  #mcu-app .btn.on-watched { border-color: #2E7D5B; color: #4CD98A; }
+  #mcu-app .btn.on-fav { border-color: #C9A24B; color: #E8C468; }
+  #mcu-app .btn-cta { background: #A11D33; color: #EDEAE3; padding: 10px 20px; border-radius: 999px; font-size: 15px; }
+  #mcu-app .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+  #mcu-app .badge { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 999px; border: 1px solid #3A3640; color: #9AA0AA; margin: 2px 4px 2px 0; }
+  #mcu-app .achv { border-radius: 10px; padding: 12px 14px; border: 1px solid #232028; }
+  #mcu-app .achv.locked { opacity: 0.7; }
+  #mcu-app .achv.unlocked { border-color: #C9A24B; background: rgba(201,162,75,0.06); }
+  #mcu-app .bar-outer { background: #232028; border-radius: 999px; height: 8px; overflow: hidden; }
+  #mcu-app .bar-inner { background: linear-gradient(to right, #A11D33, #E8C468); height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+  #mcu-app .phase-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #1c1a20; }
+  #mcu-app .modal-overlay { position: fixed; inset: 0; background: rgba(5,4,7,0.88); z-index: 50; overflow-y: auto; padding: 40px 16px; }
+  #mcu-app .modal-box { max-width: 760px; margin: 0 auto; background: #0D0C10; border: 1px solid #232028; border-radius: 16px; overflow: hidden; }
+  #mcu-app .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 46px; height: 46px; border-radius: 50%; background: #A11D33; color: #EDEAE3; border: 1px solid #C9A24B; font-size: 18px; z-index: 40; box-shadow: 0 6px 18px -4px rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; }
+  #mcu-app .back-to-top:hover { background: #C9A24B; color: #0A090D; }
+  #mcu-app .mcu-footer-social { color: #B7B2AA; transition: color 0.15s ease; }
+  #mcu-app .mcu-footer-social:hover { color: #E1306C; }
+  #mcu-app .mcu-comic-viewer { position: fixed; inset: 0; z-index: 80; background: rgba(5,4,7,0.92); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 14px; }
+  #mcu-app .mcu-comic-close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); color: #fff; font-size: 18px; border: 1px solid rgba(255,255,255,0.25); }
+  #mcu-app .mcu-comic-frame { position: relative; overflow: hidden; border-radius: 10px; border: 2px solid #C9A24B; min-width: 180px; min-height: 240px; background: linear-gradient(150deg,#3a2a63,#12101c); }
+  #mcu-app .mcu-comic-frame .mcu-tilt-shine { background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), rgba(255,255,255,0.5), transparent 55%) !important; }
+  #mcu-app .btn-light { background: #fff !important; color: #0A090D !important; border-color: #fff !important; -webkit-backdrop-filter: none; backdrop-filter: none; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  #mcu-app .btn-light:hover { background: #e5e5ea !important; }
+  #mcu-app .btn-light.fav-on { background: #E8C468 !important; border-color: #E8C468 !important; }
+  #mcu-app .mcu-allocine-link { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: #6E7480; text-decoration: none; margin-bottom: 20px; transition: color 0.15s ease; }
+  #mcu-app .mcu-allocine-link:hover { color: #FECC00; }
+  #mcu-app .mcu-only-desktop { display: none; }
+  #mcu-app .mcu-only-mobile { display: block; }
+  @media (max-width: 720px) {
+    /* Sur mobile, l'image de fond (lourde, en base64) pixelise et alourdit le scroll :
+       on la remplace par un fond uni, sobre et elegant plutot que de simplement corriger
+       son attachement. */
+    #mcu-app { background-color: #0f0715; font-size: 17px; }
+    #mcu-app::before { opacity: 0.55; background-attachment: scroll; }
+    #mcu-app #mcu-view-root { padding-bottom: 130px; }
+    #mcu-app .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    #mcu-app .mcu-cards-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 7px; }
+    #mcu-app .mcu-cards-grid .mcu-card { border-width: 1px !important; border-radius: 8px !important; }
+    #mcu-app .mcu-cards-grid .mcu-card .disp { font-size: 12px !important; }
+    #mcu-app .mcu-cards-grid .mcu-card div[style*="font-style:italic"] { font-size: 8px !important; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    #mcu-app .mcu-cards-grid .mcu-card .mono { font-size: 7px !important; padding: 2px 5px !important; top: 5px !important; }
+    #mcu-app .mcu-cards-grid .mcu-card div[style*="padding:12px"] { padding: 7px !important; }
+    #mcu-app .t-meta { font-size: 11px; }
+    #mcu-app .card, #mcu-app p, #mcu-app li { font-size: 15px; }
+    #mcu-app .mcu-orb { right: 14px; bottom: 76px; width: 44px; height: 44px; }
+    #mcu-app .back-to-top { bottom: 14px; right: 14px; width: 40px; height: 40px; }
+    #mcu-app .modal-box button[onclick^="mcuClose"] { position: fixed; top: 12px; left: 12px; z-index: 70; }
+    #mcu-app .timeline-v-line { left: 30px; }
+    #mcu-app .v-row, #mcu-app .v-row.side-l, #mcu-app .v-row.side-r { width: 100%; margin: 0 0 34px 0; padding-left: 60px; padding-right: 0; justify-content: flex-start; text-align: left; }
+    #mcu-app .v-row-inner, #mcu-app .v-row.side-l .v-row-inner, #mcu-app .v-row.side-r .v-row-inner { align-items: flex-start; max-width: 260px; }
+    #mcu-app .v-row .v-dot, #mcu-app .v-row.side-l .v-dot, #mcu-app .v-row.side-r .v-dot { left: 22px; right: auto; }
+    #mcu-app .v-row .v-stub, #mcu-app .v-row.side-l .v-stub, #mcu-app .v-row.side-r .v-stub { left: 30px; right: auto; width: 30px; background: #C9A24B; }
+    #mcu-app .v-poster { width: 150px; }
+
+    /* Header (navbar) : empile logo / onglets / badge profil, tout centre, plutot que de
+       les ecraser cote a cote sur un espace trop etroit. */
+    #mcu-app .navbar { flex-direction: column; align-items: center; gap: 10px; padding: 14px 14px; }
+    #mcu-app .navtabs { justify-content: center; }
+
+    /* Bandeau d'accueil : texte centre plutot qu'aligne a gauche sur petit ecran. */
+    #mcu-app .mcu-onboarding { text-align: center; padding: 18px 40px; }
+    #mcu-app .mcu-onboarding > div { margin-left: auto; margin-right: auto; }
+
+    /* Mon Parcours : la ligne de progression par phase (nom + barre + chiffres) passe
+       en colonne centree plutot que 3 blocs de largeur fixe qui s'ecrasent. */
+    #mcu-app .phase-row { flex-direction: column; align-items: stretch; gap: 6px; text-align: center; }
+    #mcu-app .phase-row > div:first-child { width: auto !important; }
+    #mcu-app .phase-row > div:last-child { width: auto !important; text-align: center !important; }
+    #mcu-app .statbar { justify-content: center; }
+    #mcu-app .statchip { flex: 1 1 140px; text-align: center; }
+
+    /* Footer : colonnes centrees et empilees plutot qu'alignees a gauche cote a cote. */
+    #mcu-app footer .wrap { flex-direction: column; align-items: center; text-align: center; }
+    #mcu-app footer .wrap > div { max-width: 100% !important; }
+  }
+
+
+  /* --- Cartes a collectionner : survol, effet holographique, ouverture de paquet --- */
+  #mcu-app .mcu-collectible { transition: transform .25s ease, box-shadow .25s ease; }
+  #mcu-app .mcu-collectible:hover { transform: translateY(-5px) scale(1.03); z-index: 2; }
+  @keyframes mcuHolo { 0% { background-position: 150% 0; } 100% { background-position: -100% 0; } }
+  /* Legendaire : un seul reflet doux et rare (environ 2 s toutes les 12 s). */
+  #mcu-app .mcu-shine-leg::after { content:''; position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
+    background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.15) 50%, transparent 62%); background-size: 260% 100%; animation: mcuShineRare 12s linear infinite; }
+  @keyframes mcuShineRare { 0%, 84% { background-position: 170% 0; } 100% { background-position: -70% 0; } }
+  /* Mythique : pas de reflet, une aura qui "respire" lentement. */
+  #mcu-app .mcu-aura { animation: mcuAura 4.5s ease-in-out infinite; }
+  @keyframes mcuAura { 0%, 100% { box-shadow: 0 0 14px 2px var(--glow, rgba(232,84,107,0.5)); } 50% { box-shadow: 0 0 34px 9px var(--glow, rgba(232,84,107,0.5)); } }
+  /* Carte obtenue : inclinable en 3D a la souris / au doigt, avec reflet qui suit l'angle. */
+  #mcu-app .mcu-tiltbox { position: relative; transform-style: preserve-3d; will-change: transform; }
+  #mcu-app .mcu-tilt-shine { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: var(--so, 0); transition: opacity .3s ease;
+    background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%), rgba(255,255,255,0.55), transparent 55%); }
+  #mcu-app .mcu-aura .mcu-tilt-shine { background: linear-gradient(115deg, #ff4d9d99, #ffd24d99, #4de1ff99, #b84dff99); background-size: 300% 300%; background-position: var(--sx, 50%) var(--sy, 50%); }
+  #mcu-app .mcu-flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; animation: mcuFlash 1.1s ease-out .8s both; }
+  @keyframes mcuFlash { 0% { opacity: 0; } 18% { opacity: 0.85; } 100% { opacity: 0; } }
+  /* Attente du "time code" : la carte face cachee part dans tous les sens, de plus en plus fort, avec des
+     effets lumineux a la couleur de sa rarete (--rc / --rcs) ; elle se calme pile quand elle se retourne.
+     --wt = duree de l'attente en secondes (fixee en JS d'apres le time code du son). */
+  #mcu-app .mcu-flipwrap.mcu-wander { animation: mcuWander var(--wt, 3s) ease-in-out forwards; }
+  @keyframes mcuWander {
+    0% { transform: translate(0,0) rotate(0deg) scale(1); }
+    10% { transform: translate(-26px,-16px) rotate(-4deg); }
+    20% { transform: translate(32px,20px) rotate(5deg); }
+    30% { transform: translate(-40px,28px) rotate(-6deg); }
+    40% { transform: translate(44px,-34px) rotate(7deg); }
+    50% { transform: translate(-50px,-38px) rotate(-8deg) scale(1.02); }
+    60% { transform: translate(54px,38px) rotate(9deg) scale(1.03); }
+    70% { transform: translate(-58px,32px) rotate(-10deg) scale(1.04); }
+    80% { transform: translate(60px,-42px) rotate(11deg) scale(1.06); }
+    90% { transform: translate(-28px,18px) rotate(-6deg) scale(1.08); }
+    100% { transform: translate(0,0) rotate(0deg) scale(1); }
+  }
+  #mcu-app .mcu-flipcard.mcu-waiting { transform: rotateY(180deg); animation: mcuWaitGlow var(--wt, 3s) ease-in forwards; }
+  @keyframes mcuWaitGlow { from { filter: drop-shadow(0 0 4px var(--rcs, rgba(201,162,75,0.3))); } to { filter: drop-shadow(0 0 30px var(--rc, #C9A24B)) drop-shadow(0 0 64px var(--rcs, rgba(201,162,75,0.5))); } }
+  #mcu-app .mcu-rays { position: absolute; left: 50%; top: 50%; width: 240%; aspect-ratio: 1; border-radius: 50%; pointer-events: none; opacity: 0;
+    background: repeating-conic-gradient(from 0deg, var(--rc, #C9A24B) 0 5deg, transparent 5deg 22deg);
+    -webkit-mask: radial-gradient(circle, #000 0, transparent 62%); mask: radial-gradient(circle, #000 0, transparent 62%);
+    animation: mcuRaysSpin 8s linear infinite, mcuRaysIn var(--wt, 3s) ease-in forwards; }
+  @keyframes mcuRaysSpin { from { transform: translate(-50%,-50%) rotate(0deg); } to { transform: translate(-50%,-50%) rotate(360deg); } }
+  @keyframes mcuRaysIn { from { opacity: 0; } to { opacity: 0.55; } }
+  #mcu-app .mcu-ring { position: absolute; inset: 4%; border: 3px solid var(--rc, #C9A24B); border-radius: 16px; opacity: 0; pointer-events: none; animation: mcuRing 1.2s ease-out infinite; }
+  @keyframes mcuRing { 0% { transform: scale(0.92); opacity: 0.85; } 100% { transform: scale(1.5); opacity: 0; } }
+  #mcu-app .mcu-wspark { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--rc, #C9A24B); box-shadow: 0 0 12px 4px var(--rc, #C9A24B); opacity: 0; pointer-events: none; animation: mcuWSpark 1.5s ease-out infinite; }
+  @keyframes mcuWSpark { 0% { transform: scale(0) translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1.3) translateY(-46px); opacity: 0; } }
+  #mcu-app .mcu-wait-glow { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 45%, var(--rcs, rgba(201,162,75,0.4)), transparent 62%); animation: mcuRaysIn var(--wt, 3s) ease-in forwards; }
+  @media (prefers-reduced-motion: reduce) { #mcu-app .mcu-flipwrap.mcu-wander, #mcu-app .mcu-rays { animation: none; } }
+  #mcu-app .mcu-pack-overlay { position: fixed; inset: 0; z-index: 9990; background: radial-gradient(circle at 50% 35%, rgba(40,30,70,0.96), rgba(5,4,7,0.97) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; overflow-x: hidden; overflow-y: auto; }
+  #mcu-app .mcu-pack-tools { position: absolute; top: 14px; right: 14px; display: flex; gap: 8px; }
+  #mcu-app .mcu-pack-tools button { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); color: #EDEAE3; font-size: 16px; border: 1px solid #3a3642; cursor: pointer; }
+  #mcu-app .mcu-pack { position: relative; width: min(200px, 52vw); aspect-ratio: 2/3; border-radius: 14px; background: linear-gradient(155deg, #3a2a63, #12101c 55%, #3a1620); border: 2px solid #C9A24B; box-shadow: 0 0 40px 6px rgba(201,162,75,0.35), inset 0 0 30px rgba(0,0,0,0.6); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; animation: mcuPackFloat 3s ease-in-out infinite; }
+  #mcu-app .mcu-pack::before { content:''; position:absolute; top:0; left:0; right:0; height:14px; background: repeating-linear-gradient(90deg, #C9A24B 0 6px, #8a6d2a 6px 12px); opacity:.9; }
+  #mcu-app .mcu-pack::after { content:''; position:absolute; bottom:0; left:0; right:0; height:14px; background: repeating-linear-gradient(90deg, #C9A24B 0 6px, #8a6d2a 6px 12px); opacity:.9; }
+  #mcu-app .mcu-pack-shine { position:absolute; inset:0; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.22) 50%, transparent 65%); background-size: 250% 100%; animation: mcuHolo 2.6s linear infinite; }
+  #mcu-app .mcu-pack-logo { font-size: 30px; line-height: 1; text-align: center; color: #EDEAE3; letter-spacing: 0.04em; }
+  #mcu-app .mcu-pack-sub { font-size: 9px; letter-spacing: 0.2em; color: #C9A24B; margin-top: 10px; }
+  #mcu-app .mcu-pack-opening { animation: mcuPackShake 0.65s ease-in forwards; }
+  @keyframes mcuPackFloat { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+  @keyframes mcuPackShake { 0% { transform: translateX(0) scale(1); } 15% { transform: translateX(-9px) rotate(-3deg); } 30% { transform: translateX(9px) rotate(3deg); } 45% { transform: translateX(-9px) rotate(-3deg); } 60% { transform: translateX(7px) rotate(2deg); } 80% { transform: scale(1.12); filter: brightness(1.8); } 100% { transform: scale(1.5); opacity: 0; filter: brightness(3); } }
+  #mcu-app .mcu-flipwrap { position: relative; width: min(280px, 72vw); perspective: 1100px; touch-action: none; cursor: grab; }
+  #mcu-app .mcu-flipcard { position: relative; width: 100%; aspect-ratio: 2.5/3.6; transform-style: preserve-3d; animation: mcuFlipIn 1.1s cubic-bezier(.2,.8,.2,1) .35s both; }
+  #mcu-app .mcu-flipfront, #mcu-app .mcu-flipback { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 14px; }
+  #mcu-app .mcu-flipback { transform: rotateY(180deg); background: linear-gradient(155deg, #3a2a63, #12101c 55%, #3a1620); border: 2px solid #C9A24B; display: flex; align-items: center; justify-content: center; }
+  @keyframes mcuFlipIn { from { transform: rotateY(180deg) scale(0.8); } to { transform: rotateY(0) scale(1); } }
+  #mcu-app .mcu-burst { position: absolute; inset: 6%; border: 3px solid #fff; border-radius: 50%; opacity: 0; pointer-events: none; animation: mcuBurst 0.9s ease-out 0.85s both; }
+  @keyframes mcuBurst { 0% { transform: scale(0.5); opacity: 0.9; } 100% { transform: scale(2.2); opacity: 0; } }
+  #mcu-app .mcu-spark { position: absolute; width: 7px; height: 7px; border-radius: 50%; opacity: 0; pointer-events: none; box-shadow: 0 0 10px 3px currentColor; animation: mcuSpark 1.4s ease-out both; }
+  @keyframes mcuSpark { 0% { transform: scale(0) translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1.4) translateY(-34px); opacity: 0; } }
+
+
+  /* --- Lecteur de musique d'ambiance (en bas a gauche) --- */
+  #mcu-app .mcu-music { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: flex; align-items: flex-end; gap: 8px; }
+  #mcu-app .mcu-music-btn { width: 44px; height: 44px; border-radius: 50%; background: rgba(19,17,23,0.94); border: 1px solid #3a3642; color: #EDEAE3; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0,0,0,0.5); flex-shrink: 0; }
+  #mcu-app .mcu-music-btn.playing { border-color: #C9A24B; animation: mcuMusicPulse 2.4s ease-in-out infinite; }
+  @keyframes mcuMusicPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(201,162,75,0), 0 6px 18px rgba(0,0,0,0.5); } 50% { box-shadow: 0 0 0 6px rgba(201,162,75,0.2), 0 6px 18px rgba(0,0,0,0.5); } }
+  #mcu-app .mcu-music-panel { background: rgba(19,17,23,0.97); border: 1px solid #2a2732; border-radius: 14px; padding: 12px 14px; width: min(270px, calc(100vw - 90px)); box-shadow: 0 10px 28px rgba(0,0,0,0.55); }
+  #mcu-app .mcu-music-ctl { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.07); border: 1px solid #3a3642; color: #EDEAE3; font-size: 13px; cursor: pointer; flex-shrink: 0; }
+  #mcu-app .mcu-music-ctl:hover { border-color: #C9A24B; }
+  #mcu-app .mcu-music-panel input[type=range] { flex: 1; min-width: 0; accent-color: #C9A24B; }
+  #mcu-app .mcu-footer-spotify { color: #B7B2AA; transition: color 0.15s ease; }
+  #mcu-app .mcu-footer-spotify:hover { color: #1DB954; }
+
+
+  /* --- JARVIS : orbe assistant "arc reactor" (disque lumineux + anneaux HUD qui tournent), visite guidee automatique --- */
+  #mcu-app .mcu-orb { position: fixed; right: 26px; bottom: 86px; width: 52px; height: 52px; border-radius: 50%; z-index: 9985; border: none; padding: 0; cursor: pointer; background: transparent;
+    transform: scale(calc(1 + var(--lv, 0) * 0.2)); transition: transform .08s linear; }
+  #mcu-app .mcu-orb-core { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 28%, #d8fbff, #2aa8ff 46%, #0a2760 100%);
+    box-shadow: 0 0 calc(10px + var(--lv, 0) * 30px) calc(var(--lv, 0) * 7px) rgba(77,225,255,0.8), inset 0 0 12px rgba(255,255,255,0.4);
+    animation: mcuOrbIdle 4s ease-in-out infinite; transition: box-shadow .08s linear; }
+  /* trame fine type ecran de controle + liseret interieur */
+  #mcu-app .mcu-orb-core::before { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; border: 1px solid rgba(255,255,255,0.35);
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.09) 0 1px, transparent 1px 3px); mix-blend-mode: overlay; }
+  @keyframes mcuOrbIdle { 0%, 100% { filter: brightness(0.92); } 50% { filter: brightness(1.14); } }
+  #mcu-app .mcu-orb-bars { position: relative; display: flex; align-items: center; gap: 2.5px; height: 28px; }
+  #mcu-app .mcu-orb-bars i { display: block; width: 2.5px; border-radius: 2px; background: #F2FDFF; box-shadow: 0 0 6px #7fe6ff;
+    height: calc(4px + var(--lv, 0) * 24px * var(--k, 1)); transition: height .08s linear; }
+  /* anneaux HUD : segments qui tournent en sens inverses + balayage radar + petit satellite en orbite */
+  #mcu-app .mcu-orb-seg, #mcu-app .mcu-orb-sweep, #mcu-app .mcu-orb-orbit, #mcu-app .mcu-orb-ring { position: absolute; border-radius: 50%; pointer-events: none; }
+  #mcu-app .mcu-orb-seg { inset: -9px; background: repeating-conic-gradient(from 0deg, rgba(77,225,255,0.9) 0 7deg, transparent 7deg 20deg);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+    opacity: calc(0.45 + var(--lv, 0) * 0.55); animation: mcuOrbSpin 16s linear infinite; }
+  #mcu-app .mcu-orb-sweep { inset: -15px; background: conic-gradient(from 0deg, transparent 0 72%, rgba(127,230,255,0.95) 100%);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+    opacity: calc(0.35 + var(--lv, 0) * 0.65); animation: mcuOrbSpinRev 5.5s linear infinite; }
+  #mcu-app .mcu-orb-orbit { inset: -12px; animation: mcuOrbSpin 3.6s linear infinite; }
+  #mcu-app .mcu-orb-orbit::after { content: ''; position: absolute; left: 50%; top: -3px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #EFFFFF; box-shadow: 0 0 10px 3px #4de1ff; }
+  #mcu-app .mcu-orb-ring { inset: -5px; border: 1.5px solid rgba(77,225,255,0.55); opacity: calc(0.12 + var(--lv, 0) * 0.9); transform: scale(calc(1 + var(--lv, 0) * 0.5)); transition: transform .08s linear, opacity .08s linear; }
+  @keyframes mcuOrbSpin { to { transform: rotate(360deg); } }
+  @keyframes mcuOrbSpinRev { to { transform: rotate(-360deg); } }
+  #mcu-app .mcu-orb:hover .mcu-orb-core { filter: brightness(1.3); }
+  #mcu-app .mcu-tour-block { position: fixed; inset: 0; z-index: 9970; background: rgba(4,6,14,0.18); cursor: default; }
+  #mcu-app .mcu-tour-top { position: fixed; top: 0; left: 0; right: 0; z-index: 9978; height: 4px; background: rgba(255,255,255,0.08); }
+  #mcu-app .mcu-tour-top i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #2aa8ff, #7fe6ff); box-shadow: 0 0 10px #4de1ff; }
+  #mcu-app .mcu-tour-skip { position: fixed; top: 14px; right: 16px; z-index: 9986; padding: 8px 16px; border-radius: 999px; background: rgba(8,12,22,0.9); color: #DFF7FF; border: 1px solid #2aa8ff; font-size: 12.5px; cursor: pointer; }
+  #mcu-app .mcu-tour-skip:hover { background: #2aa8ff; color: #04101c; }
+  #mcu-app .mcu-tour-spot { position: fixed; z-index: 9972; pointer-events: none; border: 2px solid #4de1ff; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(4,6,14,0.66), 0 0 22px 3px rgba(77,225,255,0.7); transition: left .5s ease, top .5s ease, width .5s ease, height .5s ease; }
+  /* curseur du pilote automatique (apparait a partir du mot "XP") */
+  #mcu-app .mcu-tour-cursor { position: fixed; z-index: 9980; width: 28px; height: 28px; margin: -3px 0 0 -3px; pointer-events: none; transition: left .9s cubic-bezier(.45,0,.2,1), top .9s cubic-bezier(.45,0,.2,1); filter: drop-shadow(0 0 6px #4de1ff); }
+  #mcu-app .mcu-tour-cursor::after { content: ''; position: absolute; left: -10px; top: -10px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #7fe6ff; opacity: 0; }
+  #mcu-app .mcu-tour-cursor.click::after { animation: mcuClickRipple .45s ease-out; }
+  @keyframes mcuClickRipple { 0% { transform: scale(0.3); opacity: 0.95; } 100% { transform: scale(1.9); opacity: 0; } }
+  #mcu-app .mcu-tour-block { position: fixed; inset: 0; z-index: 9970; background: rgba(4,6,14,0.18); cursor: default; }
+  #mcu-app .mcu-tour-top { position: fixed; top: 0; left: 0; right: 0; z-index: 9978; height: 4px; background: rgba(255,255,255,0.08); }
+  #mcu-app .mcu-tour-top i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #2aa8ff, #7fe6ff); box-shadow: 0 0 10px #4de1ff; }
+  #mcu-app .mcu-tour-skip { position: fixed; top: 14px; right: 16px; z-index: 9986; padding: 8px 16px; border-radius: 999px; background: rgba(8,12,22,0.9); color: #DFF7FF; border: 1px solid #2aa8ff; font-size: 12.5px; cursor: pointer; }
+  #mcu-app .mcu-tour-skip:hover { background: #2aa8ff; color: #04101c; }
+  #mcu-app .mcu-tour-spot { position: fixed; z-index: 9972; pointer-events: none; border: 2px solid #4de1ff; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(4,6,14,0.66), 0 0 22px 3px rgba(77,225,255,0.7); transition: left .5s ease, top .5s ease, width .5s ease, height .5s ease; }
+  #mcu-app .mcu-tour-caption { position: fixed; z-index: 9976; left: 50%; bottom: 26px; transform: translateX(-50%); max-width: min(740px, calc(100vw - 150px)); padding: 12px 18px; background: rgba(8,12,22,0.9); border-left: 3px solid #4de1ff; border-radius: 6px; color: #DFF7FF; font-size: 15px; line-height: 1.5; opacity: 0; transition: opacity .25s ease; box-shadow: 0 8px 26px rgba(0,0,0,0.5); }
+  #mcu-app .mcu-tour-caption.on { opacity: 1; }
+  #mcu-app .mcu-tour-hud { position: fixed; z-index: 9974; left: 50%; top: 38%; transform: translate(-50%,-50%); min-width: min(380px, 86vw); padding: 20px 24px; background: rgba(5,12,24,0.94); border: 1px solid #2aa8ff; border-radius: 10px; box-shadow: 0 0 36px rgba(42,168,255,0.45); font-family: 'JetBrains Mono', monospace; color: #7fe6ff; font-size: 13px; letter-spacing: 0.08em; }
+  #mcu-app .mcu-tour-hud .bar { height: 6px; margin-top: 14px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+  #mcu-app .mcu-tour-hud .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #2aa8ff, #7fe6ff); transition: width 1.8s linear; }
+  #mcu-app .mcu-tour-hud.ok { border-color: #4CD98A; color: #4CD98A; box-shadow: 0 0 36px rgba(76,217,138,0.45); }
+  #mcu-app .mcu-tour-prompt { position: fixed; inset: 0; z-index: 9980; background: radial-gradient(circle at 50% 40%, rgba(10,30,60,0.94), rgba(3,5,12,0.97) 70%); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  #mcu-app .mcu-tour-prompt-card { max-width: 420px; text-align: center; }
+  #mcu-app .mcu-tour-prompt .mcu-orb-demo { position: relative; width: 52px; height: 52px; margin: 26px auto 46px; transform: scale(1.9); }
+
+
+  /* Toasts d'achievement */
+  @keyframes mcuToastIn { from { transform: translateX(120%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+  #mcu-app .mcu-toast { pointer-events:auto; animation: mcuToastIn 0.35s cubic-bezier(.2,.9,.3,1.2); background: linear-gradient(135deg, #1a1720, #0f0d13); border: 1px solid #C9A24B; border-radius: 12px; padding: 12px 16px; display:flex; align-items:center; gap:12px; box-shadow: 0 10px 30px -8px rgba(0,0,0,0.7), 0 0 20px -4px rgba(201,162,75,0.4); max-width: 300px; cursor:pointer; }
+  #mcu-app .mcu-toast .mcu-toast-icon { font-size: 26px; flex-shrink:0; }
+  #mcu-app .mcu-toast .mcu-toast-title { font-size:10px; letter-spacing:0.1em; color:#C9A24B; font-family:'JetBrains Mono',monospace; }
+  #mcu-app .mcu-toast .mcu-toast-label { font-family:'Bebas Neue',sans-serif; font-size:19px; color:#EDEAE3; line-height:1; margin-top:2px; }
+  #mcu-app .mcu-toast .mcu-toast-desc { font-size:11.5px; color:#B7B2AA; margin-top:3px; }
+
+  /* Bandeau d'accueil (onboarding) */
+  #mcu-app .mcu-onboarding { position:relative; border-radius:14px; padding:18px 44px 18px 20px; margin-bottom:18px; background:linear-gradient(120deg, rgba(91,111,232,0.16), rgba(201,162,75,0.12)); border:1px solid #2a2732; }
+  #mcu-app .mcu-onboarding button.mcu-onb-close { position:absolute; top:10px; right:12px; font-size:16px; color:#9AA0AA; background:none; border:none; cursor:pointer; }
+  #mcu-app .mcu-onboarding button.mcu-onb-close:hover { color:#EDEAE3; }
+
+  /* Barre de recherche : bouton effacer + suggestions */
+  #mcu-app .mcu-search-wrap { position:relative; flex:1; min-width:220px; }
+  #mcu-app .mcu-search-wrap input { width:100%; box-sizing:border-box; padding-right:32px; }
+  #mcu-app .mcu-search-clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; color:#6E7480; font-size:16px; cursor:pointer; line-height:1; }
+  #mcu-app .mcu-search-clear:hover { color:#EDEAE3; }
+  #mcu-app .mcu-suggest { position:absolute; top:calc(100% + 4px); left:0; right:0; background:#131117; border:1px solid #2a2732; border-radius:10px; overflow:hidden; z-index:50; box-shadow:0 14px 34px -10px rgba(0,0,0,0.7); }
+  #mcu-app .mcu-suggest button { display:flex; width:100%; align-items:center; gap:10px; padding:9px 12px; background:none; border:none; text-align:left; color:#EDEAE3; cursor:pointer; font-size:13.5px; }
+  #mcu-app .mcu-suggest button:hover { background:#1e1b25; }
+  #mcu-app .mcu-suggest .mcu-suggest-sub { font-size:10.5px; color:#8A8690; margin-left:auto; flex-shrink:0; }
+
+  /* --- Sous-titres karaoke des succes (audio Jarvis) --- */
+  #mcu-app .mcu-sub { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 12px); z-index: 9976;
+    max-width: min(760px, calc(100vw - 150px)); padding: 12px 20px; background: rgba(8,12,22,0.92);
+    border-left: 3px solid #4de1ff; border-radius: 6px; font-size: 16px; line-height: 1.5;
+    opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; box-shadow: 0 8px 26px rgba(0,0,0,0.5); }
+  #mcu-app .mcu-sub.on { opacity: 1; transform: translate(-50%, 0); }
+  #mcu-app .mcu-sub .who { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #4de1ff; margin-bottom: 3px; }
+  #mcu-app .mcu-sub .w { color: rgba(223,247,255,0.4); transition: color .12s ease; }
+  #mcu-app .mcu-sub .w.on { color: #DFF7FF; text-shadow: 0 0 8px rgba(77,225,255,0.5); }
+  @media (max-width: 720px) { #mcu-app .mcu-sub { bottom: 72px; font-size: 14.5px; } }
+
+  /* --- Icone ronde reactive a la voix + effet piratage Ultron --- */
+  /* Avatar seul (ex. Deadpool) : l'image remplace l'orbe, sans cadre ni anneaux, taille fixe ; seule la lueur derriere reagit a la voix */
+  #mcu-app .mcu-orb-avatar { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; border-radius: 0;
+    filter: drop-shadow(0 0 calc(6px + var(--lv, 0) * 22px) rgba(232,84,107,0.9)); transition: filter .08s linear; }
+  #mcu-app .mcu-orb.has-avatar { transform: scale(calc(1.5 + var(--lv, 0) * 0.5)); }
+  #mcu-app .mcu-orb.has-avatar .mcu-orb-core { background: transparent; border: none; box-shadow: none; animation: none; overflow: visible; }
+  #mcu-app .mcu-orb.has-avatar .mcu-orb-core::before { display: none; }
+  #mcu-app .mcu-orb.has-avatar .mcu-orb-bars, #mcu-app .mcu-orb.has-avatar .mcu-orb-seg, #mcu-app .mcu-orb.has-avatar .mcu-orb-sweep,
+  #mcu-app .mcu-orb.has-avatar .mcu-orb-orbit, #mcu-app .mcu-orb.has-avatar .mcu-orb-ring { display: none; }
+
+  @keyframes mcuUltronGlitch { 0% { transform: translate(0,0); filter: hue-rotate(0deg); } 20% { transform: translate(-2px,1px); filter: hue-rotate(-14deg) brightness(1.35); } 40% { transform: translate(2px,-1px); filter: none; }
+    60% { transform: translate(-1px,-2px); filter: brightness(0.75); } 80% { transform: translate(1px,2px); filter: hue-rotate(12deg) brightness(1.4); } 100% { transform: translate(0,0); filter: none; } }
+  @keyframes mcuUltronRing { 0% { transform: scale(0.9); opacity: 0.9; } 100% { transform: scale(2); opacity: 0; } }
+  #mcu-app .mcu-orb.is-ultron .mcu-orb-core { background: radial-gradient(circle at 35% 28%, #ffd0d0, #ff2a2a 46%, #4a0606 100%);
+    box-shadow: 0 0 calc(10px + var(--lv, 0) * 30px) calc(var(--lv, 0) * 7px) rgba(255,50,50,0.85), inset 0 0 12px rgba(255,255,255,0.35);
+    animation: mcuUltronGlitch .35s steps(2) infinite; }
+  #mcu-app .mcu-orb.is-ultron .mcu-orb-seg { background: repeating-conic-gradient(from 0deg, rgba(255,60,60,0.95) 0 7deg, transparent 7deg 20deg); }
+  #mcu-app .mcu-orb.is-ultron .mcu-orb-sweep { background: conic-gradient(from 0deg, transparent 0 72%, rgba(255,90,90,0.95) 100%); animation-duration: 1.6s; }
+  #mcu-app .mcu-orb.is-ultron .mcu-orb-orbit::after { background: #FFEFEF; box-shadow: 0 0 10px 3px #ff3030; }
+  #mcu-app .mcu-orb.is-ultron .mcu-orb-ring { border-color: rgba(255,60,60,0.7); }
+  #mcu-app .mcu-orb.is-ultron .mcu-orb-bars i { background: #FFF1F1; box-shadow: 0 0 6px #ff6b6b; }
+  #mcu-app .mcu-orb.is-ultron::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(255,40,40,0.85); pointer-events: none; animation: mcuUltronRing .8s ease-out infinite; }
+  #mcu-app .mcu-sub.is-ultron { border-left-color: #ff3b3b; box-shadow: 0 8px 26px rgba(0,0,0,0.5), 0 0 22px rgba(255,40,40,0.25); }
+  #mcu-app .mcu-sub.is-ultron .who { color: #ff6b6b; }
+  #mcu-app .mcu-sub.is-ultron .w { color: rgba(255,200,200,0.4); }
+  #mcu-app .mcu-sub.is-ultron .w.on { color: #FFE3E3; text-shadow: 0 0 8px rgba(255,60,60,0.6); }
+
