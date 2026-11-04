@@ -544,6 +544,43 @@
 #mcu-app .mcu-pegfx-txt { font-family: 'JetBrains Mono', monospace; font-size: clamp(26px, 5vw, 48px); letter-spacing: .2em; color: #cfe2ff; margin-top: 46px; text-shadow: 0 0 20px rgba(100,160,255,.9); }
 #mcu-app .mcu-pegfx-sub { font-family: 'JetBrains Mono', monospace; color: #8fb3ff; font-size: 13px; letter-spacing: .14em; margin-top: 6px; }
 
+/* ===== v4 : Deadpool LEGO + Observateur en image ===== */
+#mcu-app .mcu-hunt-dp { width: 34px; height: 40px; bottom: -12px; clip-path: inset(0 0 45% 0); }
+#mcu-app .mcu-hunt-dp img, #mcu-app .mcu-dp-head img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; filter: drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+#mcu-app .mcu-dp-head { height: min(220px, 40vw); width: min(240px, 50vw); }
+#mcu-app .mcu-uatu { width: 110px; height: 112px; }
+#mcu-app .mcu-uatu img, #mcu-app .mcu-uatu-big img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; filter: drop-shadow(0 0 14px rgba(120,180,255,.45)); }
+
+/* ===== v4 : fiches secrets (cadenas au-dessus, centre) ===== */
+#mcu-app .mcu-secret { flex-direction: column !important; align-items: center !important; text-align: center !important; gap: 6px !important; }
+#mcu-app .mcu-secret .ico { width: auto !important; }
+#mcu-app .mcu-secret > div:last-child { width: 100%; }
+
+/* ===== v4 : succes du profil centres ===== */
+#mcu-app .mcu-ach-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; justify-content: center; }
+#mcu-app .mcu-frow { display: contents; }
+
+/* ===== v4 : version telephone plus compacte ===== */
+@media (max-width: 700px) {
+  #mcu-app .mcu-ach-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  #mcu-app .mcu-ach-grid > .card { width: auto !important; padding: 12px 6px !important; }
+
+  #mcu-app .hero .statbar { display: grid !important; grid-template-columns: 1fr 1.45fr 1fr; gap: 8px !important; margin-top: 12px !important; }
+  #mcu-app .hero .statchip { min-width: 0 !important; padding: 7px 8px !important; border-radius: 12px !important; flex: none !important; }
+  #mcu-app .hero .statchip .label { font-size: 8.5px !important; letter-spacing: .12em !important; margin-bottom: 2px; }
+  #mcu-app .hero .statchip .val { font-size: 15px !important; line-height: 1.15 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #mcu-app .hero .statchip .val .lvn { display: block; font-size: 9.5px; letter-spacing: .02em; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  #mcu-app .filters { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 8px !important; margin: 12px 0 14px !important; }
+  #mcu-app .filters .mcu-search-wrap { width: 100% !important; flex: none !important; }
+  #mcu-app .filters .mcu-search-wrap input { font-size: 16px !important; padding-top: 8px !important; padding-bottom: 8px !important; min-height: 0 !important; }
+  #mcu-app .mcu-frow { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
+  #mcu-app .mcu-frow::-webkit-scrollbar { display: none; }
+  #mcu-app .mcu-frow > select, #mcu-app .mcu-frow > .btn { flex: 0 0 auto !important; width: auto !important; font-size: 12px !important; padding-top: 6px !important; padding-bottom: 6px !important; min-height: 0 !important; white-space: nowrap; }
+  #mcu-app .mcu-frow > select { padding-left: 12px !important; padding-right: 26px !important; background-position: right 9px center !important; background-size: 9px !important; }
+  #mcu-app .mcu-frow > .btn { padding-left: 12px !important; padding-right: 12px !important; }
+}
+
 /* ===== module social (style Apple) ===== */
 
   #mcu-app .mcs-navbtn { position: relative; }
