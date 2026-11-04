@@ -419,3 +419,184 @@
   #mcu-app .mcu-sub.is-ultron .w { color: rgba(255,200,200,0.4); }
   #mcu-app .mcu-sub.is-ultron .w.on { color: #FFE3E3; text-shadow: 0 0 8px rgba(255,60,60,0.6); }
 
+
+/* ===== v3 : ouverture de paquet plus lente et plus fluide ===== */
+#mcu-app .mcu-pack-opening { animation: mcuPackOpen 1.45s cubic-bezier(.3,0,.2,1) forwards; }
+@keyframes mcuPackOpen {
+  0% { transform: translateY(0) scale(1) rotate(0); filter: brightness(1); }
+  10% { transform: translateX(-7px) rotate(-2.5deg); }
+  20% { transform: translateX(7px) rotate(2.5deg); }
+  30% { transform: translateX(-8px) rotate(-3deg); }
+  40% { transform: translateX(8px) rotate(3deg); }
+  50% { transform: translateX(-5px) rotate(-1.5deg) scale(1.02); filter: brightness(1.15); }
+  62% { transform: translateX(0) rotate(0) scale(1.06); filter: brightness(1.6) drop-shadow(0 0 30px rgba(255,215,120,.9)); }
+  78% { transform: translateY(-16px) scale(1.1); filter: brightness(2.2) drop-shadow(0 0 60px rgba(255,215,120,1)); opacity: 1; }
+  100% { transform: translateY(-60px) scale(1.25); filter: brightness(3) blur(6px); opacity: 0; }
+}
+#mcu-app .mcu-flipcard { animation: mcuFlipIn2 1.6s cubic-bezier(.16,1,.3,1) .25s both; }
+@keyframes mcuFlipIn2 {
+  0% { transform: translateY(60px) rotateY(180deg) scale(.55); opacity: 0; }
+  25% { opacity: 1; }
+  65% { transform: translateY(-6px) rotateY(-14deg) scale(1.05); }
+  85% { transform: translateY(0) rotateY(5deg) scale(.99); }
+  100% { transform: translateY(0) rotateY(0) scale(1); }
+}
+#mcu-app .mcu-burst { animation: mcuBurst 1.2s ease-out 1.25s both; }
+#mcu-app .mcu-spark { animation-duration: 1.9s; }
+#mcu-app .mcu-flipwrap.mcu-pack-leave { animation: mcuPackLeave .46s cubic-bezier(.5,0,.75,0) forwards; pointer-events: none; }
+@keyframes mcuPackLeave { to { transform: translateY(-40px) rotate(-6deg) scale(.86); opacity: 0; filter: blur(2px); } }
+
+/* ===== v3 : chasses (araignees / Deadpool) ===== */
+#mcu-app .mcu-hunt { position: absolute; z-index: 6; width: 22px; height: 22px; padding: 0; border: 0; background: none; cursor: pointer; opacity: .82; transition: opacity .2s, transform .2s; }
+#mcu-app .mcu-hunt:hover { opacity: 1; transform: scale(1.25); }
+#mcu-app .mcu-hunt svg { width: 100%; height: 100%; display: block; }
+#mcu-app .mcu-hunt-spider { top: var(--thread, 20px); transform-origin: 50% calc(-1 * var(--thread, 20px)); animation: mcuDangle 3.4s ease-in-out infinite; }
+#mcu-app .mcu-hunt-spider::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: var(--thread, 20px); background: rgba(235,235,245,.55); }
+@keyframes mcuDangle { 0%,100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+#mcu-app .mcu-hunt-dp { bottom: -9px; width: 24px; height: 24px; clip-path: inset(0 0 40% 0); animation: mcuPeek 5s ease-in-out infinite; }
+#mcu-app .mcu-hunt-dp:hover { clip-path: inset(0 0 0 0); transform: translateY(-8px) scale(1.2); }
+@keyframes mcuPeek { 0%,80%,100% { transform: translateY(0); } 88% { transform: translateY(-5px); } }
+@media (prefers-reduced-motion: reduce) { #mcu-app .mcu-hunt { animation: none !important; } }
+
+/* ===== v3 : « Sur ta gauche » ===== */
+#mcu-app .mcu-oyl-runner { position: fixed; z-index: 9989; bottom: 18px; right: -90px; width: 46px; height: 62px; pointer-events: none; animation: mcuRun 4.2s linear forwards; }
+#mcu-app .mcu-oyl-runner svg { width: 100%; height: 100%; animation: mcuBob .35s ease-in-out infinite; }
+#mcu-app .mcu-oyl-say { position: absolute; bottom: 64px; left: -30px; white-space: nowrap; background: #fff; color: #111; font: 600 12px/1 -apple-system,BlinkMacSystemFont,Inter,sans-serif; padding: 6px 10px; border-radius: 12px; opacity: 0; animation: mcuSay 4.2s ease forwards; }
+@keyframes mcuRun { to { transform: translateX(calc(-100vw - 180px)); } }
+@keyframes mcuBob { 50% { transform: translateY(-3px); } }
+@keyframes mcuSay { 0%,30% { opacity: 0; } 38%,70% { opacity: 1; } 80%,100% { opacity: 0; } }
+#mcu-app .mcu-oyl-bubble { position: fixed; z-index: 9989; left: 18px; top: 45%; background: rgba(28,28,30,.92); color: #fff; border: 1px solid rgba(255,255,255,.2); font: 600 15px -apple-system,BlinkMacSystemFont,Inter,sans-serif; padding: 10px 16px; border-radius: 16px; animation: mcuSxIn .4s ease forwards; opacity: 0; }
+#mcu-app .mcu-sx-oyl { background: radial-gradient(circle at 20% 50%, rgba(160,180,255,.25), rgba(0,0,0,.55) 70%); flex-direction: column; }
+#mcu-app .mcu-sx-oyl .mcu-oyl-falcon { width: min(420px, 80vw); animation: mcuFly 2s cubic-bezier(.2,.8,.2,1) forwards; }
+#mcu-app .mcu-sx-oyl .mcu-oyl-falcon svg { width: 100%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,.6)); }
+@keyframes mcuFly { from { transform: translateX(-110vw) rotate(-8deg) scale(.6); } 70% { transform: translateX(4vw) rotate(3deg) scale(1.05); } to { transform: translateX(0) rotate(0) scale(1); } }
+#mcu-app .mcu-oyl-txt { font-family: 'Bebas Neue', Inter, sans-serif; font-size: clamp(34px, 7vw, 70px); color: #fff; letter-spacing: .04em; margin-top: 18px; text-shadow: 0 4px 24px rgba(0,0,0,.8); opacity: 0; animation: mcuSxIn .6s ease 1.6s forwards; }
+
+/* ===== v3 : l'Observateur ===== */
+#mcu-app .mcu-uatu { position: fixed; z-index: 9988; width: 92px; height: 92px; padding: 0; border: 0; background: none; cursor: pointer; transition: transform .9s cubic-bezier(.2,.8,.2,1), opacity .6s; opacity: .95; }
+#mcu-app .mcu-uatu svg { width: 100%; height: 100%; }
+#mcu-app .mcu-uatu.side-top { top: 0; transform: translateY(-100%) rotate(180deg); }
+#mcu-app .mcu-uatu.side-bottom { bottom: 0; transform: translateY(100%); }
+#mcu-app .mcu-uatu.side-left { left: 0; transform: translateX(-100%) rotate(90deg); }
+#mcu-app .mcu-uatu.side-right { right: 0; transform: translateX(100%) rotate(-90deg); }
+#mcu-app .mcu-uatu.side-top.in { transform: translateY(-48%) rotate(180deg); }
+#mcu-app .mcu-uatu.side-bottom.in { transform: translateY(48%); }
+#mcu-app .mcu-uatu.side-left.in { transform: translateX(-48%) rotate(90deg); }
+#mcu-app .mcu-uatu.side-right.in { transform: translateX(48%) rotate(-90deg); }
+#mcu-app .mcu-uatu.gone { opacity: 0; }
+#mcu-app .mcu-sx-uatu { background: radial-gradient(circle, rgba(10,10,30,.3), rgba(0,0,0,.9) 75%); flex-direction: column; }
+#mcu-app .mcu-uatu-big { width: min(240px, 50vw); animation: mcuUatu 2.4s ease forwards; }
+@keyframes mcuUatu { from { transform: scale(.4); opacity: 0; filter: blur(8px); } to { transform: scale(1); opacity: 1; filter: none; } }
+#mcu-app .mcu-uatu-txt { color: #e6d7c2; font: italic 600 clamp(16px, 2.6vw, 22px) Georgia, serif; margin-top: 16px; text-align: center; padding: 0 20px; opacity: 0; animation: mcuSxIn .8s ease 1.4s forwards; }
+
+/* ===== v3 : araignees / Deadpool (effets finaux) ===== */
+#mcu-app .mcu-sx-spider { background: rgba(0,0,0,.55); }
+#mcu-app .mcu-web { position: fixed; width: min(38vw, 340px); height: auto; opacity: 0; animation: mcuSxIn .8s ease forwards; }
+#mcu-app .mcu-web.tl { top: 0; left: 0; } #mcu-app .mcu-web.tr { top: 0; right: 0; transform: scaleX(-1); }
+#mcu-app .mcu-web.bl { bottom: 0; left: 0; transform: scaleY(-1); } #mcu-app .mcu-web.br { bottom: 0; right: 0; transform: scale(-1,-1); }
+#mcu-app .mcu-sp-txt, #mcu-app .mcu-dp-txt { font-family: 'Bebas Neue', Inter, sans-serif; font-size: clamp(28px, 5vw, 52px); color: #fff; text-align: center; padding: 0 20px; text-shadow: 0 4px 24px rgba(0,0,0,.9); }
+#mcu-app .mcu-sx-dp { background: rgba(60,0,8,.55); flex-direction: column; }
+#mcu-app .mcu-dp-head { width: min(160px, 36vw); animation: mcuDpHead 1.2s cubic-bezier(.2,1.6,.4,1) forwards; }
+@keyframes mcuDpHead { from { transform: scale(0) rotate(-200deg); } to { transform: scale(1) rotate(0); } }
+#mcu-app .mcu-dp-txt { font-size: clamp(20px, 3.6vw, 36px); max-width: 760px; margin-top: 14px; }
+#mcu-app .mcu-brick { position: fixed; top: -40px; width: 34px; height: 20px; background: #C8102E; border-radius: 3px; box-shadow: inset 0 -4px 0 rgba(0,0,0,.25); animation: mcuBrick 2.6s ease-in forwards; }
+#mcu-app .mcu-brick::before, #mcu-app .mcu-brick::after { content: ''; position: absolute; top: -5px; width: 10px; height: 6px; background: #C8102E; border-radius: 3px 3px 0 0; }
+#mcu-app .mcu-brick::before { left: 5px; } #mcu-app .mcu-brick::after { right: 5px; }
+@keyframes mcuBrick { to { transform: translateY(110vh) rotate(260deg); } }
+
+/* ===== v3 : Projet P.E.G.A.S.U.S. ===== */
+#mcu-app .mcu-peg-stamp { position: absolute; z-index: 8; padding: 3px 8px; border: 2px solid rgba(190,30,45,.55); border-radius: 4px; background: rgba(190,30,45,.08); color: rgba(220,60,70,.55); font: 700 10px/1 'JetBrains Mono', monospace; letter-spacing: .12em; transform: rotate(-9deg); cursor: pointer; opacity: .38; transition: opacity .2s; }
+#mcu-app .mcu-peg-stamp:hover { opacity: 1; }
+#mcu-app .mcu-peg-stamp.spot-tl { top: 12px; left: 64px; } #mcu-app .mcu-peg-stamp.spot-tr { top: 58px; right: 14px; }
+#mcu-app .mcu-peg-stamp.spot-bl { bottom: 14px; left: 18px; } #mcu-app .mcu-peg-stamp.spot-br { bottom: 14px; right: 18px; }
+#mcu-app .mcu-peg-stamp.spot-img { top: 46%; right: 9%; opacity: .16; transform: rotate(14deg) scale(.9); }
+#mcu-app .mcu-peg-term { position: fixed; inset: 0; z-index: 9992; background: rgba(0,6,2,.82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); overflow-y: auto; padding: 40px 14px; animation: mcuSxIn .3s ease forwards; opacity: 0; }
+#mcu-app .mcu-peg-win { position: relative; max-width: 720px; margin: 0 auto; background: #020a04; border: 1px solid #1f7a3a; border-radius: 10px; padding: 22px 22px 18px; color: #6dfc8e; font: 13.5px/1.6 'JetBrains Mono', ui-monospace, monospace; box-shadow: 0 0 40px rgba(40,255,110,.15), inset 0 0 80px rgba(40,255,110,.05); }
+#mcu-app .mcu-peg-win::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 10px; background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px); }
+#mcu-app .mcu-peg-top { font-size: 11px; letter-spacing: .14em; color: #2fbf5a; }
+#mcu-app .mcu-peg-title { font-size: clamp(22px, 4vw, 34px); letter-spacing: .14em; margin: 4px 0 12px; color: #a8ffbd; text-shadow: 0 0 12px rgba(80,255,130,.6); }
+#mcu-app .mcu-peg-win b { color: #c9ffd5; }
+#mcu-app .mcu-peg-list { padding-left: 0; list-style: none; margin: 10px 0; }
+#mcu-app .mcu-peg-list li { padding: 8px 10px; border: 1px dashed #1f5f33; border-radius: 6px; margin-bottom: 8px; }
+#mcu-app .mcu-peg-list li.ok { border-style: solid; border-color: #2fbf5a; background: rgba(40,255,110,.06); }
+#mcu-app .mcu-peg-list .tag { color: #2fbf5a; font-size: 11px; margin-right: 6px; }
+#mcu-app .mcu-peg-list .src, #mcu-app .mcu-peg-dim { color: #3f9a58; }
+#mcu-app .mcu-peg-status { color: #a8ffbd; margin: 6px 0 12px; }
+#mcu-app .mcu-peg-form { display: flex; gap: 8px; flex-wrap: wrap; }
+#mcu-app .mcu-peg-form input { flex: 1; min-width: 220px; background: #000; color: #a8ffbd; border: 1px solid #2fbf5a; border-radius: 6px; padding: 10px 12px; font: inherit; letter-spacing: .08em; text-transform: uppercase; outline: none; }
+#mcu-app .mcu-peg-form button, #mcu-app .mcu-peg-x { background: #0f3b1d; color: #a8ffbd; border: 1px solid #2fbf5a; border-radius: 6px; padding: 10px 16px; font: inherit; cursor: pointer; }
+#mcu-app .mcu-peg-x { position: absolute; top: 12px; right: 12px; padding: 4px 10px; z-index: 2; }
+#mcu-app .mcu-peg-err { color: #ff6b6b; }
+#mcu-app .mcu-peg-ok { color: #a8ffbd; font-size: 15px; }
+#mcu-app .mcu-sx-peg { background: rgba(0,10,4,.6); }
+#mcu-app .mcu-peg-card { background: #020a04; border: 1px solid #2fbf5a; border-radius: 10px; padding: 22px 30px; text-align: center; color: #6dfc8e; font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 50px rgba(40,255,110,.25); }
+#mcu-app .mcu-peg-h { font-size: 11px; letter-spacing: .16em; color: #2fbf5a; }
+#mcu-app .mcu-peg-code { font-size: clamp(30px, 6vw, 54px); letter-spacing: .2em; color: #c9ffd5; margin: 10px 0; text-shadow: 0 0 16px rgba(80,255,130,.7); }
+#mcu-app .mcu-peg-src, #mcu-app .mcu-peg-hint { font-size: 12px; color: #3f9a58; }
+#mcu-app .mcu-peg-open { margin: 4px 0 12px; }
+#mcu-app .mcu-sx-pegfx { background: radial-gradient(circle, rgba(30,90,255,.35), rgba(0,0,10,.9) 70%); flex-direction: column; }
+#mcu-app .mcu-tess { position: relative; width: 120px; height: 120px; transform-style: preserve-3d; animation: mcuTess 6s linear infinite; }
+#mcu-app .mcu-tess i { position: absolute; inset: 0; border: 2px solid rgba(160,200,255,.9); background: rgba(60,130,255,.25); box-shadow: 0 0 30px rgba(80,150,255,.8), inset 0 0 30px rgba(120,180,255,.7); }
+#mcu-app .mcu-tess i:nth-child(1) { transform: translateZ(60px); } #mcu-app .mcu-tess i:nth-child(2) { transform: rotateY(180deg) translateZ(60px); }
+#mcu-app .mcu-tess i:nth-child(3) { transform: rotateY(90deg) translateZ(60px); } #mcu-app .mcu-tess i:nth-child(4) { transform: rotateY(-90deg) translateZ(60px); }
+#mcu-app .mcu-tess i:nth-child(5) { transform: rotateX(90deg) translateZ(60px); } #mcu-app .mcu-tess i:nth-child(6) { transform: rotateX(-90deg) translateZ(60px); }
+@keyframes mcuTess { to { transform: rotateX(360deg) rotateY(720deg); } }
+#mcu-app .mcu-pegfx-txt { font-family: 'JetBrains Mono', monospace; font-size: clamp(26px, 5vw, 48px); letter-spacing: .2em; color: #cfe2ff; margin-top: 46px; text-shadow: 0 0 20px rgba(100,160,255,.9); }
+#mcu-app .mcu-pegfx-sub { font-family: 'JetBrains Mono', monospace; color: #8fb3ff; font-size: 13px; letter-spacing: .14em; margin-top: 6px; }
+
+/* ===== module social (style Apple) ===== */
+
+  #mcu-app .mcs-navbtn { position: relative; }
+  #mcu-app .mcs-dot { position:absolute; top:0; right:0; min-width:17px; height:17px; padding:0 5px; border-radius:9px; background:#FF3B30; color:#fff; font:600 10.5px/17px -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,sans-serif; text-align:center; box-shadow:0 0 0 2px rgba(10,9,13,.95); }
+  #mcs-overlay, #mcs-pop { --mcs-tint:#E8C468; --mcs-fill:rgba(118,118,128,.24); --mcs-fill2:rgba(118,118,128,.12); --mcs-sep:rgba(84,84,88,.55); --mcs-label2:rgba(235,235,245,.6); --mcs-red:#FF453A; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; color:#fff; letter-spacing:-.01em; }
+  #mcs-overlay { position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,.45); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); overflow-y:auto; padding:48px 16px; animation:mcsFade .25s ease; }
+  #mcs-overlay * { box-sizing:border-box; }
+  @keyframes mcsFade { from { opacity:0 } to { opacity:1 } }
+  @keyframes mcsRise { from { opacity:0; transform:translateY(14px) scale(.98) } to { opacity:1; transform:none } }
+  #mcs-overlay .mcs-box { max-width:640px; margin:0 auto; background:rgba(28,28,30,.78); -webkit-backdrop-filter:saturate(180%) blur(30px); backdrop-filter:saturate(180%) blur(30px); border:.5px solid rgba(255,255,255,.12); border-radius:24px; padding:22px 20px 20px; box-shadow:0 30px 80px rgba(0,0,0,.55); animation:mcsRise .35s cubic-bezier(.2,.8,.2,1); }
+  #mcs-overlay h2 { font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,sans-serif; font-weight:700; letter-spacing:-.02em; font-size:28px; margin:2px 0 16px; }
+  #mcs-overlay h3 { font-size:13px; font-weight:400; text-transform:uppercase; letter-spacing:.02em; color:var(--mcs-label2); margin:18px 4px 6px !important; }
+  #mcs-overlay .gold { color:var(--mcs-tint); }
+  #mcs-overlay .mcs-tabs { display:flex; gap:2px; padding:2px; margin-bottom:18px; background:var(--mcs-fill); border-radius:10px; }
+  #mcs-overlay .mcs-tabs button { flex:1; padding:7px 8px; border:none; border-radius:8px; background:transparent; color:#fff; font:500 13px/1.2 inherit; font-family:inherit; cursor:pointer; transition:background .2s, box-shadow .2s; white-space:nowrap; }
+  #mcs-overlay .mcs-tabs button.on { background:#636366; box-shadow:0 3px 8px rgba(0,0,0,.22), 0 0 0 .5px rgba(0,0,0,.04); font-weight:600; }
+  #mcs-overlay .mcs-btn { display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:7px 16px; border:none; border-radius:999px; background:var(--mcs-fill); color:var(--mcs-tint); font:600 14px/1 inherit; font-family:inherit; cursor:pointer; transition:transform .12s ease, filter .2s, background .2s; }
+  #mcs-overlay .mcs-btn:hover { filter:brightness(1.12); }
+  #mcs-overlay .mcs-btn:active { transform:scale(.96); }
+  #mcs-overlay .mcs-btn.pri { background:var(--mcs-tint); color:#1C1C1E; }
+  #mcs-overlay .mcs-btn.danger { background:rgba(255,69,58,.15); color:var(--mcs-red); }
+  #mcs-overlay .mcs-row .mcs-btn { min-height:30px; padding:6px 14px; font-size:13px; margin-left:6px; }
+  #mcs-overlay input[type=text], #mcs-overlay input[type=email], #mcs-overlay input[type=password], #mcs-overlay input:not([type]) { width:100%; padding:12px 14px; border:none; border-radius:12px; background:var(--mcs-fill); color:#fff; font:400 16px/1.2 inherit; font-family:inherit; margin:6px 0 14px; outline:none; transition:box-shadow .2s; }
+  #mcs-overlay input::placeholder { color:rgba(235,235,245,.3); }
+  #mcs-overlay input:focus { box-shadow:0 0 0 3px rgba(232,196,104,.45); }
+  #mcs-overlay input[type=checkbox] { -webkit-appearance:none; appearance:none; position:relative; width:51px !important; height:31px; margin:0 10px 0 0 !important; padding:0; border-radius:16px; background:rgba(120,120,128,.32); vertical-align:middle; cursor:pointer; transition:background .25s; }
+  #mcs-overlay input[type=checkbox]::after { content:''; position:absolute; top:2px; left:2px; width:27px; height:27px; border-radius:50%; background:#fff; box-shadow:0 3px 8px rgba(0,0,0,.15), 0 3px 1px rgba(0,0,0,.06); transition:transform .25s cubic-bezier(.2,.8,.2,1); }
+  #mcs-overlay input[type=checkbox]:checked { background:#34C759; }
+  #mcs-overlay input[type=checkbox]:checked::after { transform:translateX(20px); }
+  #mcs-overlay label { display:block; font-size:13px; color:var(--mcs-label2); margin:0 4px; }
+  #mcs-overlay .mcs-row { display:flex; align-items:center; gap:12px; padding:10px 14px; margin:0 0 6px; background:var(--mcs-fill2); border-radius:14px; }
+  #mcs-overlay .mcs-av { width:38px; height:38px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,#5B6FE8,#A11D33); display:flex; align-items:center; justify-content:center; font-weight:600; overflow:hidden; }
+  #mcs-overlay .mcs-av img { width:100%; height:100%; object-fit:cover; }
+  #mcs-overlay .mcs-muted { color:var(--mcs-label2); font-size:13px; }
+  #mcs-overlay .mcs-link { color:var(--mcs-tint); cursor:pointer; text-decoration:none; background:none; border:none; font:inherit; padding:0; font-weight:500; }
+  #mcs-overlay .mcs-link:hover { text-decoration:underline; }
+  #mcs-overlay .mcs-close { float:right; width:30px; height:30px; border-radius:50%; border:none; background:var(--mcs-fill); color:rgba(235,235,245,.6); font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  #mcs-overlay .mcs-msg { padding:12px 14px; border-radius:12px; background:var(--mcs-fill2); margin:6px 0 14px; font-size:14px; }
+  #mcu-app .mcs-comm { color:#FF453A; font-weight:700; cursor:help; }
+  #mcu-app .mcs-fr { display:inline-flex; align-items:center; cursor:pointer; background:none; border:none; padding:0 2px; position:relative; vertical-align:middle; transition:transform .12s; }
+  #mcu-app .mcs-fr:active { transform:scale(.92); }
+  #mcu-app .mcs-fr .mcs-mini { width:28px; height:28px; border-radius:50%; border:2px solid rgba(28,28,30,.95); overflow:hidden; background:linear-gradient(135deg,#5B6FE8,#A11D33); display:flex; align-items:center; justify-content:center; font:600 11px -apple-system,BlinkMacSystemFont,Inter,sans-serif; color:#fff; box-shadow:0 2px 6px rgba(0,0,0,.35); }
+  #mcu-app .mcs-fr .mcs-mini + .mcs-mini { margin-left:-11px; }
+  #mcu-app .mcs-fr .mcs-mini img { width:100%; height:100%; object-fit:cover; }
+  #mcu-app .mcs-fr .mcs-count { position:absolute; right:-7px; bottom:-5px; min-width:17px; height:17px; padding:0 4px; border-radius:9px; background:#E8C468; color:#1C1C1E; font:700 10.5px/17px -apple-system,BlinkMacSystemFont,Inter,sans-serif; text-align:center; box-shadow:0 0 0 2px rgba(28,28,30,.95); }
+  #mcs-pop { position:fixed; inset:0; z-index:9500; background:rgba(0,0,0,.4); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:16px; animation:mcsFade .2s ease; }
+  #mcs-pop .mcs-pbox { width:min(360px,100%); max-height:70vh; overflow-y:auto; background:rgba(44,44,46,.82); -webkit-backdrop-filter:saturate(180%) blur(30px); backdrop-filter:saturate(180%) blur(30px); border:.5px solid rgba(255,255,255,.14); border-radius:22px; padding:18px 16px 14px; box-shadow:0 24px 70px rgba(0,0,0,.6); animation:mcsRise .3s cubic-bezier(.2,.8,.2,1); }
+  #mcs-pop h3 { font-weight:700; font-size:17px; letter-spacing:-.01em; margin:0 4px 12px; color:#fff; text-align:center; }
+  #mcs-pop .mcs-prow { display:flex; align-items:center; gap:12px; padding:10px 12px; margin:0 0 6px; background:rgba(118,118,128,.14); border-radius:14px; cursor:pointer; transition:background .15s; }
+  #mcs-pop .mcs-prow:hover { background:rgba(118,118,128,.26); }
+  #mcs-pop .mcs-av { width:36px; height:36px; border-radius:50%; flex-shrink:0; overflow:hidden; background:linear-gradient(135deg,#5B6FE8,#A11D33); display:flex; align-items:center; justify-content:center; font-weight:600; }
+  #mcs-pop .mcs-av img { width:100%; height:100%; object-fit:cover; }
+  .mcs-friend-stats { text-align:center; color:rgba(235,235,245,.65); font:400 14px -apple-system,BlinkMacSystemFont,Inter,sans-serif; margin:10px 0 0; }
+
+  .mcs-toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:9600; background:rgba(28,28,30,.92); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); color:#fff; font:500 14px -apple-system,BlinkMacSystemFont,Inter,sans-serif; padding:12px 18px; border-radius:14px; border:.5px solid rgba(255,255,255,.15); box-shadow:0 12px 40px rgba(0,0,0,.5); transition:opacity .5s; }
+  .mcs-toast.out { opacity:0; }
