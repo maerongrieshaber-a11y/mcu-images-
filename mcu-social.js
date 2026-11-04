@@ -1,11 +1,11 @@
-/* MCU Timeline - module social (comptes, amis, progression synchronisee) - v3 2026-11-04
+/* MCU Timeline - module social (comptes, amis, progression synchronisee) - v5 2026-11-04 (RGPD : donnees minimales, export et suppression de compte)
    La configuration Supabase (URL + cle publique) reste dans le bloc de code Odoo : window.MCU_SOCIAL_CONFIG */
 (function(){
   var CFG = window.MCU_SOCIAL_CONFIG || {};
   var SUPABASE_URL = CFG.url || '', SUPABASE_ANON_KEY = CFG.key || '';
 
   var CONFIGURED = !!SUPABASE_URL && !!SUPABASE_ANON_KEY && SUPABASE_URL.indexOf('VOTRE-PROJET') === -1 && SUPABASE_ANON_KEY.indexOf('VOTRE_') === -1;
-  var SB_LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+  var SB_LIB = 'https://maerongrieshaber-a11y.github.io/mcu-images-/vendor/supabase-2.45.4.min.js';   // auto-hebergee : aucun appel a un CDN tiers
 
   var sb = null, me = null, myProfile = null;
   var community = {};                 // item_id -> {avg, votes, viewers}
@@ -110,7 +110,7 @@
   }
   function pushProgress(){
     var m = MCU(); if (!m || !me) return Promise.resolve();
-    return sb.from('user_progress').upsert({ user_id: me.id, state: syncable(m.state), device: (navigator.userAgent || '').slice(0, 120) }, { onConflict: 'user_id' }).select('updated_at').single().then(function(r){
+    return sb.from('user_progress').upsert({ user_id: me.id, state: syncable(m.state) }, { onConflict: 'user_id' }).select('updated_at').single().then(function(r){
       if (r.error) { console.warn('[mcu-social] progression', r.error.message); return; }
       setMeta({ uid: me.id, at: r.data.updated_at, dirty: false }); return 'up';
     });
@@ -316,9 +316,12 @@
     return '<h2>Rejoins la <span class="gold">communauté</span></h2>'
       + '<p class="mcs-muted">Crée un compte pour sauvegarder ta progression sur tous tes appareils, ajouter tes amis et voir ce qu\'ils regardent.</p>'
       + (panelMsg ? '<div class="mcs-msg">'+panelMsg+'</div>' : '')
-      + '<label>E-mail</label><input id="mcs-email" type="email" autocomplete="email">'
-      + '<label>Mot de passe (8 caractères min.)</label><input id="mcs-pass" type="password" autocomplete="current-password">'
-      + '<label>Pseudo (seulement pour l\'inscription : 3-24 lettres, chiffres, . _ -)</label><input id="mcs-user" type="text" autocomplete="nickname">'
+      + '<label for="mcs-email">E-mail</label><input id="mcs-email" type="email" autocomplete="email">'
+      + '<label for="mcs-pass">Mot de passe (8 caractères min.)</label><input id="mcs-pass" type="password" autocomplete="current-password">'
+      + '<label for="mcs-user">Pseudo (seulement pour l\'inscription : 3-24 lettres, chiffres, . _ -)</label><input id="mcs-user" type="text" autocomplete="nickname">'
+      + '<div class="mcs-consent"><label class="mcs-check"><input id="mcs-cgu" type="checkbox"> <span>Pour créer un compte : j\'accepte les <a href="/conditions-utilisation" target="_blank" rel="noopener">conditions d\'utilisation</a> et j\'ai lu la <a href="/confidentialite" target="_blank" rel="noopener">politique de confidentialité</a>.</span></label>'
+      + '<label class="mcs-check"><input id="mcs-age" type="checkbox"> <span>J\'ai 15 ans ou plus, ou un parent est d\'accord pour que je crée ce compte.</span></label></div>'
+      + '<p class="mcs-muted" style="margin:0 4px 12px">Le compte est facultatif : tout le site fonctionne sans. Il sert seulement à retrouver ta progression sur plusieurs appareils et à jouer avec tes amis.</p>'
       + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mcs-btn pri" data-a="login">Se connecter</button><button class="mcs-btn" data-a="signup">Créer un compte</button><button class="mcs-link" data-a="reset">Mot de passe oublié ?</button></div>';
   }
   function renderFriends(){
@@ -350,6 +353,8 @@
       + '<button class="mcs-btn pri" data-a="saveacc">Enregistrer</button> <button class="mcs-btn danger" data-a="logout">Se déconnecter</button>'
       + '<h3>Progression</h3><p class="mcs-muted">Ta progression (vus, notes, quiz, cartes, XP, secrets, profil) est enregistrée sur ton compte et partagée entre tous tes appareils.</p>'
       + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mcs-btn" data-a="syncdown">Récupérer la progression du compte</button><button class="mcs-btn" data-a="syncup">Remplacer par celle de cet appareil</button></div>'
+      + '<h3>Mes données</h3><p class="mcs-muted">Tu peux télécharger tout ce que le site garde sur toi, ou supprimer définitivement ton compte (profil, amis, vus, notes et progression en ligne). <a class="mcs-link" href="/confidentialite" target="_blank" rel="noopener">En savoir plus</a></p>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mcs-btn" data-a="export">Télécharger mes données</button><button class="mcs-btn danger" data-a="delacc">Supprimer mon compte</button></div>'
       + '<p class="mcs-muted" style="margin-top:14px">Connecté avec '+esc(me.email||'')+'</p>';
   }
   var currentFriend = null;
@@ -397,7 +402,9 @@
     if (a === 'signup') {
       var u = val('mcs-user');
       if (!/^[a-zA-Z0-9_.-]{3,24}$/.test(u)) return setMsg('Choisis un pseudo de 3 à 24 caractères (lettres, chiffres, . _ -).');
-      return sb.auth.signUp({ email: val('mcs-email'), password: val('mcs-pass'), options: { data: { username: u, display_name: u }, emailRedirectTo: location.origin + location.pathname } })
+      if (!(document.getElementById('mcs-cgu') || {}).checked) return setMsg('Coche la case d\'acceptation des conditions d\'utilisation pour créer un compte.');
+      if (!(document.getElementById('mcs-age') || {}).checked) return setMsg('Pour créer un compte, il faut avoir 15 ans ou l\'accord d\'un parent.');
+      return sb.auth.signUp({ email: val('mcs-email'), password: val('mcs-pass'), options: { data: { username: u, display_name: u, cgu_version: '2026-11-04', cgu_accepted_at: new Date().toISOString() }, emailRedirectTo: location.origin + location.pathname } })
         .then(function(r){ if (r.error) return setMsg(esc(traduire(r.error.message))); if (!r.data.session) setMsg('📧 Compte créé ! Clique sur le lien reçu par e-mail pour l\'activer, puis reviens te connecter.'); });
     }
     if (a === 'reset') {
@@ -407,6 +414,15 @@
     if (a === 'syncdown') { if (v !== 'ok') return setMsg('Remplacer la progression de cet appareil par celle de ton compte ? <button class="mcs-btn pri" data-a="syncdown" data-v="ok">Confirmer</button>'); return pullOrPush('down').then(function(){ return loadTables(); }).then(function(){ setMsg('\u2714 Progression du compte chargée sur cet appareil.'); }); }
     if (a === 'syncup') { if (v !== 'ok') return setMsg('Remplacer la progression du compte par celle de cet appareil ? Tes autres appareils la récupéreront. <button class="mcs-btn pri" data-a="syncup" data-v="ok">Confirmer</button>'); return pullOrPush('up').then(function(){ return loadTables(); }).then(function(){ return pushDiff(); }).then(function(){ setMsg('\u2714 Cet appareil est maintenant la référence de ton compte.'); }); }
     if (a === 'logout') { return sb.auth.signOut().then(function(){ closePanel(); }); }
+    if (a === 'export') { return exportMyData(); }
+    if (a === 'delacc') {
+      if (v !== 'ok') return setMsg('Supprimer définitivement ton compte ? Ton profil, tes amis, tes vus, tes notes et ta progression en ligne seront effacés. Ta progression reste sur cet appareil tant que tu ne vides pas les données du navigateur. <button class="mcs-btn danger" data-a="delacc" data-v="ok">Oui, supprimer mon compte</button>');
+      return sb.rpc('delete_my_account').then(function(r){
+        if (r.error) return setMsg('La suppression n\'a pas abouti (' + esc(r.error.message) + '). Écris-nous et nous la ferons pour toi.');
+        try { localStorage.removeItem(META_KEY); } catch(e){}
+        return sb.auth.signOut().then(function(){ panelMsg = ''; closePanel(); miniToast('Ton compte a été supprimé.'); });
+      });
+    }
     if (a === 'search') {
       var q = val('mcs-search').replace(/^@/, '').replace(/[%_]/g, '');
       if (q.length < 2) return;
@@ -432,6 +448,23 @@
         myProfile = r.data; lastProfSig = ''; pushProfile(); setMsg('Profil enregistré ✔');
       });
     }
+  }
+  function exportMyData(){
+    if (!me) return;
+    var q = function(p){ return p.then(function(r){ return r.error ? { erreur: r.error.message } : r.data; }); };
+    return Promise.all([
+      q(sb.from('profiles').select('*').eq('id', me.id)),
+      q(sb.from('friendships').select('*')),
+      q(sb.from('watches').select('*').eq('user_id', me.id)),
+      q(sb.from('ratings').select('*').eq('user_id', me.id)),
+      q(sb.from('user_progress').select('*').eq('user_id', me.id))
+    ]).then(function(r){
+      var data = { exporte_le: new Date().toISOString(), site: location.origin, compte: { id: me.id, email: me.email, cree_le: me.created_at, derniere_connexion: me.last_sign_in_at }, profil: r[0], amities: r[1], vus: r[2], notes: r[3], progression_en_ligne: r[4], progression_sur_cet_appareil: (MCU() && MCU().state) || null };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'mcu-timeline-mes-donnees.json'; document.body.appendChild(a); a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      setMsg('✔ Fichier téléchargé : mcu-timeline-mes-donnees.json');
+    });
   }
   function traduire(m){
     if (/Invalid login/i.test(m)) return 'E-mail ou mot de passe incorrect.';

@@ -1,3 +1,10 @@
+/* ===== Polices auto-hebergees (Bebas Neue, Inter, JetBrains Mono - licence SIL OFL 1.1) : aucun appel a Google ===== */
+@font-face { font-family: 'Bebas Neue'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/bebas-neue-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Bebas Neue'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/bebas-neue-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(fonts/inter-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(fonts/inter-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(fonts/jetbrains-mono-400-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(fonts/jetbrains-mono-400-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 /* MCU Timeline - styles */
 
   #mcu-app {
@@ -580,6 +587,27 @@
   #mcu-app .mcu-frow > select { padding-left: 12px !important; padding-right: 26px !important; background-position: right 9px center !important; background-size: 9px !important; }
   #mcu-app .mcu-frow > .btn { padding-left: 12px !important; padding-right: 12px !important; }
 }
+
+/* ===== v5 : accessibilite et contrastes (WCAG 2.1 AA) ===== */
+#mcu-app :focus-visible, #mcs-overlay :focus-visible, #mcs-pop :focus-visible { outline: 2px solid #E8C468 !important; outline-offset: 2px !important; border-radius: 6px; }
+#mcu-app .mcu-sr { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+#mcu-app .mcu-ach-locked { border-style: dashed !important; }
+#mcu-app .mcu-ach-locked > div:last-child { color: #A6A2AE; }
+#mcu-app .mcu-ach-locked .mcu-ach-ico { filter: grayscale(1); opacity: .4; }
+#mcu-app .achv.locked { opacity: 1 !important; border-style: dashed; }
+#mcu-app [style^="color:#6E7480"], #mcu-app [style*=";color:#6E7480"], #mcu-app [style*="; color:#6E7480"] { color: #A3A9B4 !important; }
+#mcu-app [style^="color:#5C5964"], #mcu-app [style*=";color:#5C5964"], #mcu-app [style*="; color:#5C5964"] { color: #A6A2AE !important; }
+#mcu-app [style^="color:#A11D33"], #mcu-app [style*=";color:#A11D33"], #mcu-app [style*="; color:#A11D33"] { color: #E5485F !important; }
+#mcu-app [style*="background:#8B1E3F;color:#08070C"] { color: #FFFFFF !important; }
+#mcu-app .mcu-legal-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin-bottom: 10px; }
+#mcu-app .mcu-legal-links a { color: #C9C5BE; text-decoration: underline; text-underline-offset: 3px; font-size: 12px; }
+#mcu-app .mcu-legal-links a:hover { color: #E8C468; }
+#mcs-overlay .mcs-consent { margin: 2px 0 10px; }
+#mcs-overlay label.mcs-check { display: flex !important; align-items: flex-start; gap: 10px; margin: 0 4px 12px !important; font-size: 13px; line-height: 1.4; color: rgba(235,235,245,.85); cursor: pointer; }
+#mcs-overlay label.mcs-check input[type=checkbox] { flex-shrink: 0; margin: 0 !important; }
+#mcs-overlay label.mcs-check a, #mcs-overlay .mcs-muted a { color: #E8C468; text-decoration: underline; }
+#mcu-app .mcu-allocine-link, #mcu-app .mcu-search-clear { color: #A3A9B4 !important; }
+#mcu-app .mcs-dot { background: #D70015 !important; }
 
 /* ===== module social (style Apple) ===== */
 
