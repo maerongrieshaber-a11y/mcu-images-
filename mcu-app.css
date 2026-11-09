@@ -512,11 +512,11 @@
 @keyframes mcuBrick { to { transform: translateY(110vh) rotate(260deg); } }
 
 /* ===== v3 : Projet P.E.G.A.S.U.S. ===== */
-#mcu-app .mcu-peg-stamp { position: absolute; z-index: 8; padding: 3px 8px; border: 2px solid rgba(190,30,45,.55); border-radius: 4px; background: rgba(190,30,45,.08); color: rgba(220,60,70,.55); font: 700 10px/1 'JetBrains Mono', monospace; letter-spacing: .12em; transform: rotate(-9deg); cursor: pointer; opacity: .38; transition: opacity .2s; }
+#mcu-app .mcu-peg-stamp { position: absolute; z-index: 8; padding: 3px 8px; border: 2px solid rgba(190,30,45,.55); border-radius: 4px; background: rgba(190,30,45,.08); color: rgba(235,70,80,.9); font: 700 10px/1 'JetBrains Mono', monospace; letter-spacing: .12em; transform: rotate(-9deg); cursor: pointer; opacity: .5; transition: opacity .2s; background-color: rgba(10,10,14,.55); box-shadow: 0 0 0 1px rgba(0,0,0,.35); z-index: 30; }
 #mcu-app .mcu-peg-stamp:hover { opacity: 1; }
 #mcu-app .mcu-peg-stamp.spot-tl { top: 12px; left: 64px; } #mcu-app .mcu-peg-stamp.spot-tr { top: 58px; right: 14px; }
 #mcu-app .mcu-peg-stamp.spot-bl { bottom: 14px; left: 18px; } #mcu-app .mcu-peg-stamp.spot-br { bottom: 14px; right: 18px; }
-#mcu-app .mcu-peg-stamp.spot-img { top: 46%; right: 9%; opacity: .16; transform: rotate(14deg) scale(.9); }
+#mcu-app .mcu-peg-stamp.spot-img { top: 46%; right: 9%; opacity: .3; transform: rotate(14deg) scale(.9); }
 #mcu-app .mcu-peg-term { position: fixed; inset: 0; z-index: 9992; background: rgba(0,6,2,.82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); overflow-y: auto; padding: 40px 14px; animation: mcuSxIn .3s ease forwards; opacity: 0; }
 #mcu-app .mcu-peg-win { position: relative; max-width: 720px; margin: 0 auto; background: #020a04; border: 1px solid #1f7a3a; border-radius: 10px; padding: 22px 22px 18px; color: #6dfc8e; font: 13.5px/1.6 'JetBrains Mono', ui-monospace, monospace; box-shadow: 0 0 40px rgba(40,255,110,.15), inset 0 0 80px rgba(40,255,110,.05); }
 #mcu-app .mcu-peg-win::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: 10px; background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px); }
