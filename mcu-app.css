@@ -612,22 +612,39 @@
 /* ===== v9 : navigation qui revient en remontant + parcours Avant Doomsday ===== */
 #mcu-app #mcu-nav-root { position: sticky; top: 0; z-index: 40; transition: transform .28s ease; }
 #mcu-app #mcu-nav-root.mcu-nav-hide { transform: translateY(-110%); }
-#mcu-app .mcu-dday-banner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; margin: 6px auto 22px; max-width: 760px; padding: 18px 20px; border-radius: 14px; border: 1px solid rgba(201,162,75,.45); background: linear-gradient(120deg, rgba(60,18,24,.92), rgba(16,14,22,.92)); }
-#mcu-app .mcu-dday-k { font: 700 11px/1.3 'JetBrains Mono', monospace; letter-spacing: .18em; color: #E8C468; }
-#mcu-app .mcu-dday-t { font-size: 26px; margin: 4px 0 2px; }
-#mcu-app .mcu-dday-s { color: #D8D4CB; font-size: 14px; }
-#mcu-app .mcu-dday { position: fixed; inset: 0; z-index: 60; background: rgba(5,4,7,.86); overflow-y: auto; padding: 40px 16px; }
-#mcu-app .mcu-dday-win { position: relative; max-width: 640px; margin: 0 auto; padding: 22px 20px; border-radius: 16px; background: #121018; border: 1px solid rgba(201,162,75,.4); }
-#mcu-app .mcu-dday-x { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,.08); color: #fff; cursor: pointer; }
-#mcu-app .mcu-dday-list { list-style: none; padding: 0; margin: 14px 0 0; }
-#mcu-app .mcu-dday-list li button { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 6px; border-radius: 10px; border: 1px solid #2A2630; background: rgba(255,255,255,.03); color: #EDEAE4; cursor: pointer; font: inherit; }
-#mcu-app .mcu-dday-list li button:hover, #mcu-app .mcu-dday-list li button:focus-visible { border-color: #C9A24B; }
-#mcu-app .mcu-dday-list li.ok button { opacity: .75; }
-#mcu-app .mcu-dday-c { flex: 0 0 22px; height: 22px; border-radius: 50%; border: 2px solid #C9A24B; color: #E8C468; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
-#mcu-app .mcu-dday-list li.ok .mcu-dday-c { background: #C9A24B; color: #121018; }
-#mcu-app .mcu-dday-y { color: #A9A4B0; font-size: 12px; }
-#mcu-app .mcu-dday-why { color: #C9C4BB; font-size: 13px; }
-@media (max-width: 640px) { #mcu-app .mcu-dday-t { font-size: 21px; } #mcu-app .mcu-dday-banner .btn-cta { width: 100%; } }
+#mcu-app .mcu-dday-banner, #mcu-app .mcu-dday-win { --dg: #7EF1A5; --dg2: #55EC87; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -.01em; }
+#mcu-app .mcu-dday-banner { display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 760px; margin: 8px auto 26px; padding: 18px 22px; border-radius: 26px; background: rgba(28,28,30,.62); -webkit-backdrop-filter: saturate(180%) blur(30px); backdrop-filter: saturate(180%) blur(30px); border: .5px solid rgba(255,255,255,.14); box-shadow: 0 24px 60px -18px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06); }
+#mcu-app .mcu-dday-ring { position: relative; flex: 0 0 64px; width: 64px; height: 64px; }
+#mcu-app .mcu-dday-ring svg { width: 64px; height: 64px; transform: rotate(-90deg); }
+#mcu-app .mcu-dday-ring circle { fill: none; stroke-width: 6; }
+#mcu-app .mcu-dday-ring .tr { stroke: rgba(126,241,165,.16); }
+#mcu-app .mcu-dday-ring .fg { stroke: var(--dg); stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1); }
+#mcu-app .mcu-dday-ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; }
+#mcu-app .mcu-dday-ring small { font-size: 10px; font-weight: 600; opacity: .7; margin-left: 1px; }
+#mcu-app .mcu-dday-txt { flex: 1 1 auto; min-width: 0; text-align: left; }
+#mcu-app .mcu-dday-k { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--dg); }
+#mcu-app .mcu-dday-t { font-size: 21px; font-weight: 700; color: #fff; margin: 2px 0 1px; line-height: 1.2; }
+#mcu-app .mcu-dday-s { font-size: 14px; color: rgba(235,235,245,.68); }
+#mcu-app .mcu-dday-go { flex: 0 0 auto; border: none; border-radius: 999px; padding: 11px 20px; background: var(--dg); color: #0B1A10; font: 600 15px/1 inherit; font-family: inherit; cursor: pointer; transition: transform .15s ease, filter .2s; }
+#mcu-app .mcu-dday-go:hover { filter: brightness(1.08); }
+#mcu-app .mcu-dday-go:active { transform: scale(.96); }
+#mcu-app .mcu-dday-go:focus-visible, #mcu-app .mcu-dday-list li button:focus-visible { outline: 3px solid rgba(126,241,165,.6); outline-offset: 2px; }
+#mcu-app .mcu-dday { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.45); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); overflow-y: auto; padding: 48px 16px; animation: mcuDdFade .25s ease; }
+@keyframes mcuDdFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes mcuDdRise { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+#mcu-app .mcu-dday-win { position: relative; max-width: 620px; margin: 0 auto; padding: 24px 20px 20px; border-radius: 26px; background: rgba(28,28,30,.82); -webkit-backdrop-filter: saturate(180%) blur(30px); backdrop-filter: saturate(180%) blur(30px); border: .5px solid rgba(255,255,255,.12); box-shadow: 0 30px 80px rgba(0,0,0,.55); animation: mcuDdRise .35s cubic-bezier(.2,.8,.2,1); }
+#mcu-app .mcu-dday-h { font-size: 30px; font-weight: 700; letter-spacing: -.02em; color: #fff; margin: 4px 0 6px; }
+#mcu-app .mcu-dday-x { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(118,118,128,.24); color: rgba(235,235,245,.7); font-size: 13px; font-weight: 700; cursor: pointer; }
+#mcu-app .mcu-dday-list { list-style: none; padding: 0; margin: 16px 0 0; border-radius: 16px; overflow: hidden; background: rgba(118,118,128,.12); }
+#mcu-app .mcu-dday-list li + li { border-top: .5px solid rgba(84,84,88,.55); }
+#mcu-app .mcu-dday-list li button { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 12px 14px; border: none; background: transparent; color: #fff; cursor: pointer; font: inherit; transition: background .15s; }
+#mcu-app .mcu-dday-list li button:hover { background: rgba(118,118,128,.18); }
+#mcu-app .mcu-dday-c { flex: 0 0 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(235,235,245,.3); color: #0B1A10; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; }
+#mcu-app .mcu-dday-list li.ok .mcu-dday-c { background: var(--dg2); border-color: var(--dg2); }
+#mcu-app .mcu-dday-list li b { font-weight: 600; }
+#mcu-app .mcu-dday-y { color: rgba(235,235,245,.6); font-size: 13px; }
+#mcu-app .mcu-dday-why { color: rgba(235,235,245,.78); font-size: 13px; }
+@media (max-width: 640px) { #mcu-app .mcu-dday-banner { flex-wrap: wrap; text-align: center; padding: 18px; } #mcu-app .mcu-dday-txt { flex-basis: calc(100% - 84px); } #mcu-app .mcu-dday-go { width: 100%; padding: 13px; } #mcu-app .mcu-dday-t { font-size: 18px; } }
 #mcs-overlay .mcs-cmp { padding: 10px 14px; margin: 0 0 6px; background: var(--mcs-fill2); border-radius: 14px; }
 #mcs-overlay .mcs-cmp-l { font-size: 13px; color: var(--mcs-label2); }
 #mcs-overlay .mcs-cmp-v { display: flex; align-items: baseline; justify-content: space-between; font-size: 22px; font-weight: 700; margin-top: 2px; }
