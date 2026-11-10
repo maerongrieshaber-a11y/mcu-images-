@@ -306,11 +306,12 @@
         + [['feed','Fil d\'actu'],['friends','Mes amis'+(incoming.length?' · '+incoming.length+' demande'+(incoming.length>1?'s':''):'')],['add','Ajouter'],['account','Mon compte']].map(function(t){ return '<button data-a="tab" data-v="'+t[0]+'" class="'+(panelTab===t[0]?'on':'')+'">'+t[1]+'</button>'; }).join('')
         + '</div>';
       if (panelMsg) h += '<div class="mcs-msg">'+panelMsg+'</div>';
-      h += '<div id="mcs-body">'+(panelTab==='feed' ? '<div class="mcs-muted">Chargement…</div>' : panelTab==='friends' ? renderFriends() : panelTab==='add' ? renderAdd() : panelTab==='friend' ? '<div class="mcs-muted">Chargement…</div>' : renderAccount())+'</div>';
+      h += '<div id="mcs-body">'+(panelTab==='feed' ? '<div class="mcs-muted">Chargement…</div>' : panelTab==='friends' ? renderFriends() : panelTab==='add' ? renderAdd() : (panelTab==='friend' || panelTab==='compare') ? '<div class="mcs-muted">Chargement…</div>' : renderAccount())+'</div>';
     }
     o.innerHTML = h + '</div>';
     if (me && panelTab === 'feed') renderFeed();
     if (me && panelTab === 'friend') renderFriendProfile();
+    if (me && panelTab === 'compare') renderCompare();
   }
   function renderAuth(){
     return '<h2>Rejoins la <span class="gold">communauté</span></h2>'
@@ -332,7 +333,7 @@
     }
     h += '<h3 style="margin:14px 0 4px">Mes amis ('+friends.length+')</h3>';
     if (!friends.length) h += '<div class="mcs-muted">Pas encore d\'amis. Va dans l\'onglet « Ajouter ».</div>';
-    friends.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1"><button class="mcs-link" data-a="seefriend" data-v="'+p.id+'">'+esc(nameOf(p))+'</button> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Retirer</button></div>'; });
+    friends.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1"><button class="mcs-link" data-a="seefriend" data-v="'+p.id+'">'+esc(nameOf(p))+'</button> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="compare" data-v="'+p.id+'">⚔️ Comparer</button><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Retirer</button></div>'; });
     if (outgoing.length) {
       h += '<h3 style="margin:14px 0 4px">Demandes envoyées</h3>';
       outgoing.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1">'+esc(nameOf(p))+' <span class="mcs-muted">en attente</span></div><button class="mcs-btn" data-a="remove" data-v="'+p.friendship_id+'">Annuler</button></div>'; });
@@ -357,7 +358,37 @@
       + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mcs-btn" data-a="export">Télécharger mes données</button><button class="mcs-btn danger" data-a="delacc">Supprimer mon compte</button></div>'
       + '<p class="mcs-muted" style="margin-top:14px">Connecté avec '+esc(me.email||'')+'</p>';
   }
-  var currentFriend = null;
+  var currentFriend = null, currentCompare = null;
+  /* ---- défi : compare ta progression avec un ami ---- */
+  function renderCompare(){
+    var b = document.getElementById('mcs-body'), m = MCU(); if (!b || !m || !currentCompare) return;
+    var f = friends.filter(function(x){ return x.id === currentCompare.id; })[0] || { id: currentCompare.id, username: '?' };
+    var pd = (currentCompare.prof && currentCompare.prof.profile_data) || {}, mineP = m.profilePayload ? m.profilePayload() : {};
+    var fw = {}; Object.keys(friendData).forEach(function(item){ friendData[item].forEach(function(e){ if (e.uid === f.id && e.watched) fw[item] = true; }); });
+    var mw = m.state.watched || {}, items = m.mcuItems ? m.mcuItems() : [];
+    var mineN = items.filter(function(i){ return mw[i.id]; }).length, hisN = items.filter(function(i){ return fw[i.id]; }).length;
+    var ddM = m.doomsday ? m.doomsday(mw) : null, ddF = m.doomsday ? m.doomsday(fw) : null;
+    var onlyHim = items.filter(function(i){ return fw[i.id] && !mw[i.id]; }), onlyMe = items.filter(function(i){ return mw[i.id] && !fw[i.id]; });
+    function row(label, a, c, max){
+      var w = function(x){ return max ? Math.round(x / max * 100) : 0; };
+      return '<div class="mcs-cmp"><div class="mcs-cmp-l">'+label+'</div><div class="mcs-cmp-v"><span'+(a>c?' class="win"':'')+'>'+a+'</span><span class="mcs-muted">vs</span><span'+(c>a?' class="win"':'')+'>'+c+'</span></div>'
+        + (max ? '<div class="mcs-cmp-bars"><i style="width:'+w(a)+'%"></i><i class="f" style="width:'+w(c)+'%"></i></div>' : '') + '</div>';
+    }
+    var lead = mineN === hisN ? 'Égalité parfaite ! À qui le prochain film ?' : (mineN > hisN ? 'Tu mènes de <strong>'+(mineN-hisN)+'</strong> contenu'+(mineN-hisN>1?'s':'')+'. Ne le laisse pas revenir !' : '<strong>'+esc(nameOf(f))+'</strong> mène de <strong>'+(hisN-mineN)+'</strong> contenu'+(hisN-mineN>1?'s':'')+'. À toi de rattraper ton retard !');
+    var h = '<button class="mcs-link" data-a="tab" data-v="friends">← Retour</button>'
+      + '<div class="mcs-row" style="justify-content:space-between"><div><strong>Toi</strong></div><div class="mcs-muted">⚔️ DÉFI</div><div style="text-align:right"><strong>'+esc(nameOf(f))+'</strong></div></div>'
+      + '<div class="mcs-msg">'+lead+'</div>'
+      + row('Contenus MCU vus', mineN, hisN, items.length)
+      + (ddM ? row('Avant Doomsday (sur '+ddM.total+')', ddM.seen, ddF.seen, ddM.total) : '')
+      + row('Niveau', mineP.lvl || 1, pd.lvl || 1, 0)
+      + row('XP', mineP.xp || 0, pd.xp || 0, 0)
+      + row('Trophées', mineP.ach || 0, pd.ach || 0, 0);
+    if (!currentCompare.prof) h += '<div class="mcs-muted">Chargement du niveau de ton ami…</div>';
+    if (onlyHim.length) { h += '<h3>Vu par '+esc(nameOf(f))+', pas encore par toi ('+onlyHim.length+')</h3>'; onlyHim.slice(0, 12).forEach(function(i){ h += '<div class="mcs-row"><button class="mcs-link" data-a="openitem" data-v="'+esc(i.id)+'">'+esc(i.title)+'</button></div>'; }); }
+    if (onlyMe.length) h += '<p class="mcs-muted" style="margin-top:10px">Et toi, tu as vu <strong>'+onlyMe.length+'</strong> contenu'+(onlyMe.length>1?'s':'')+' que '+esc(nameOf(f))+' n\'a pas encore vu'+(onlyMe.length>1?'s':'')+'.</p>';
+    h += '<p class="mcs-muted" style="margin-top:10px">Seuls les contenus que ton ami a marqués comme vus avec son compte sont comptés.</p>';
+    b.innerHTML = h;
+  }
   function renderFriendProfile(){
     var p = currentFriend; if (!p) return;
     var list = [];
@@ -396,6 +427,12 @@
     if (a === 'tab') { panelTab = v; panelMsg = ''; return renderPanel(); }
     if (a === 'openitem') { closePanel(); var m = MCU(); if (m) m.openItem(v); return; }
     if (a === 'seefriend') { return openFriendProfile(v); }
+    if (a === 'compare') {
+      currentCompare = { id: v, prof: null }; panelTab = 'compare'; panelMsg = ''; renderPanel();
+      return sb.from('profiles').select('id,username,display_name,avatar_url,profile_data').eq('id', v).single().then(function(r){
+        if (currentCompare && currentCompare.id === v) { currentCompare.prof = (r && r.data) || {}; renderCompare(); }
+      });
+    }
     if (a === 'login') {
       return sb.auth.signInWithPassword({ email: val('mcs-email'), password: val('mcs-pass') }).then(function(r){ if (r.error) setMsg(esc(traduire(r.error.message))); });
     }
