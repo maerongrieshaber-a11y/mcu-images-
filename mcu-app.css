@@ -612,7 +612,7 @@
 /* ===== v9 : navigation qui revient en remontant + parcours Avant Doomsday ===== */
 #mcu-app #mcu-nav-root { position: sticky; top: 0; z-index: 40; transition: transform .28s ease; }
 #mcu-app #mcu-nav-root.mcu-nav-hide { transform: translateY(-110%); }
-#mcu-app .mcu-dday-banner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 6px 0 22px; padding: 18px 20px; border-radius: 14px; border: 1px solid rgba(201,162,75,.45); background: linear-gradient(120deg, rgba(60,18,24,.92), rgba(16,14,22,.92)); }
+#mcu-app .mcu-dday-banner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; margin: 6px auto 22px; max-width: 760px; padding: 18px 20px; border-radius: 14px; border: 1px solid rgba(201,162,75,.45); background: linear-gradient(120deg, rgba(60,18,24,.92), rgba(16,14,22,.92)); }
 #mcu-app .mcu-dday-k { font: 700 11px/1.3 'JetBrains Mono', monospace; letter-spacing: .18em; color: #E8C468; }
 #mcu-app .mcu-dday-t { font-size: 26px; margin: 4px 0 2px; }
 #mcu-app .mcu-dday-s { color: #D8D4CB; font-size: 14px; }
