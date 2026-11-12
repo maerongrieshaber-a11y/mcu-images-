@@ -745,3 +745,10 @@
 .mcs-rk-who .mcs-muted { font-size: 12px; }
 .mcs-rk-v { font-size: 20px; font-weight: 700; white-space: nowrap; }
 .mcs-rk-v small { font-size: 12px; font-weight: 500; opacity: .7; }
+
+/* ===== v19 : lien d'invitation + acces a l'ordre en 1 image ===== */
+.mcs-invite { padding: 14px 16px; margin: 0 0 18px; border-radius: 14px; background: linear-gradient(135deg, rgba(232,196,104,.14), var(--mcs-fill2)); }
+.mcs-invite p { margin: 4px 0 10px; }
+#mcu-app .mcu-oneimg { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(232,196,104,.5); background: rgba(232,196,104,.08); color: #E8C468; font: 600 14px/1.2 Inter, system-ui, sans-serif; text-decoration: none; transition: background .2s, transform .15s; }
+#mcu-app .mcu-oneimg:hover { background: rgba(232,196,104,.18); }
+#mcu-app .mcu-oneimg:active { transform: scale(.97); }

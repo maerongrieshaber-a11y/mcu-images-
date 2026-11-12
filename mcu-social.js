@@ -342,10 +342,56 @@
     return h;
   }
   function renderAdd(){
-    return '<label>Pseudo de ton ami</label><input id="mcs-search" type="text" placeholder="ex : tony_stark">'
+    return '<div class="mcs-invite"><strong>Invite tes amis en un clic</strong><p class="mcs-muted">Envoie ton lien : quand ton ami l\'ouvre et se connecte, vous êtes ajoutés automatiquement en amis.</p><button class="mcs-btn pri" data-a="share">📤 Partager mon lien d\'invitation</button></div>'
+      + '<label>Pseudo de ton ami</label><input id="mcs-search" type="text" placeholder="ex : tony_stark">'
       + '<button class="mcs-btn pri" data-a="search">Rechercher</button>'
       + '<p class="mcs-muted" style="margin-top:12px">Ton pseudo à partager : <strong style="color:#E8C468">@'+esc(myProfile ? myProfile.username : '')+'</strong></p>'
       + '<div id="mcs-results"></div>';
+  }
+  /* ---- lien d'invitation : ouvrir le lien = devenir amis ---- */
+  var INV_KEY = 'mcu_invite', inviteCode = null, invitePrompted = false;
+  function pendingInvite(){ try { return JSON.parse(localStorage.getItem(INV_KEY) || 'null'); } catch(e){ return null; } }
+  function clearInvite(){ try { localStorage.removeItem(INV_KEY); } catch(e){} }
+  function captureInvite(){
+    var qs = new URLSearchParams(location.search), u = qs.get('ami');
+    if (!u) return;
+    try { localStorage.setItem(INV_KEY, JSON.stringify({ u: u.replace(/^@/, ''), c: qs.get('c') || '' })); } catch(e){}
+    qs.delete('ami'); qs.delete('c');
+    try { history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs.toString() : '') + location.hash); } catch(e){}
+  }
+  function inviteLink(){
+    var base = location.origin + '/?ami=' + encodeURIComponent((myProfile && myProfile.username) || '');
+    if (inviteCode) return Promise.resolve(base + '&c=' + inviteCode);
+    return sb.rpc('my_invite_code').then(function(r){ if (!r.error && r.data) inviteCode = r.data; return base + (inviteCode ? '&c=' + inviteCode : ''); }, function(){ return base; });
+  }
+  function copyText(t){
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+    return new Promise(function(ok){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch(e){} a.remove(); ok(); });
+  }
+  function shareInvite(){
+    return inviteLink().then(function(link){
+      var txt = 'Rejoins-moi sur MCU Timeline : on suit nos films et séries Marvel et on se compare !';
+      if (navigator.share) return navigator.share({ title: 'MCU Timeline', text: txt, url: link }).catch(function(){});
+      return copyText(link).then(function(){ setMsg('Lien copié ✔ Colle-le dans un message à ton ami.<br><span class="mcs-muted">' + esc(link) + '</span>'); });
+    });
+  }
+  function processInvite(){
+    var inv = pendingInvite(); if (!inv || !me) return;
+    var uname = String(inv.u || '');
+    if (!uname || (myProfile && uname.toLowerCase() === String(myProfile.username).toLowerCase())) { clearInvite(); return; }
+    function done(msg){ clearInvite(); return loadFriends().then(function(){ miniToast(msg); panelMsg = msg; panelTab = 'friends'; if (!document.getElementById('mcs-overlay')) { var o = document.createElement('div'); o.id = 'mcs-overlay'; o.onclick = function(e){ if (e.target === o) closePanel(); }; document.body.appendChild(o); } renderPanel(); }); }
+    var viaCode = inv.c ? sb.rpc('accept_invite', { p_code: inv.c }) : Promise.resolve({ error: { message: 'no code' } });
+    return viaCode.then(function(r){
+      if (!r.error && r.data) { if (r.data.self) { clearInvite(); return; } return done('🤝 Vous êtes maintenant amis avec ' + (r.data.name || uname) + ' !'); }
+      return sb.from('profiles').select('id,username,display_name').eq('username', uname).limit(1).then(function(p){
+        var t = (p.data || [])[0]; if (!t || t.id === me.id) { clearInvite(); return; }
+        var isF = friends.some(function(f){ return f.id === t.id; }), inc = incoming.filter(function(f){ return f.id === t.id; })[0], out = outgoing.some(function(f){ return f.id === t.id; });
+        if (isF) { clearInvite(); miniToast('Tu es déjà ami avec ' + nameOf(t) + ' 🤝'); return; }
+        if (inc) return sb.from('friendships').update({ status: 'accepted' }).eq('id', inc.friendship_id).then(function(){ return done('🤝 Vous êtes maintenant amis avec ' + nameOf(t) + ' !'); });
+        if (out) { clearInvite(); miniToast('Demande déjà envoyée à ' + nameOf(t)); return; }
+        return sb.from('friendships').insert({ requester: me.id, addressee: t.id }).then(function(){ return done('Demande d\'ami envoyée à ' + nameOf(t) + ' ✔'); });
+      });
+    }).catch(function(e){ console.warn('[mcu-social] invitation', e); });
   }
   function renderAccount(){
     var p = myProfile || {};
@@ -503,6 +549,7 @@
         return sb.auth.signOut().then(function(){ panelMsg = ''; closePanel(); miniToast('Ton compte a été supprimé.'); });
       });
     }
+    if (a === 'share') { return shareInvite(); }
     if (a === 'search') {
       var q = val('mcs-search').replace(/^@/, '').replace(/[%_]/g, '');
       if (q.length < 2) return;
@@ -567,9 +614,11 @@
     var u = session ? session.user : null;
     if ((u && u.id) === (me && me.id)) return;
     me = u;
-    if (!me) { syncReady = false; friends = []; incoming = []; outgoing = []; friendData = {}; myProfile = null; synced = { watched:{}, ratings:{} }; updateNavBadge(); decorateModal(true); return; }
+    if (!me) { syncReady = false; friends = []; incoming = []; outgoing = []; friendData = {}; myProfile = null; synced = { watched:{}, ratings:{} }; updateNavBadge(); decorateModal(true);
+      if (pendingInvite() && !invitePrompted) { invitePrompted = true; setTimeout(function(){ panelTab = 'feed'; panelMsg = '👋 Un ami t\'a invité ! Crée ton compte ou connecte-toi : vous serez ajoutés automatiquement en amis.'; renderPanel(); }, 900); }
+      return; }
     sb.from('profiles').select('*').eq('id', me.id).single().then(function(r){ myProfile = r.data; if (document.getElementById('mcs-overlay')) { panelTab = 'feed'; renderPanel(); } });
-    initialSync().then(loadFriends).then(pushProfile).catch(function(e){ console.warn('[mcu-social]', e); });
+    initialSync().then(loadFriends).then(function(){ var p = myProfile ? Promise.resolve() : sb.from('profiles').select('*').eq('id', me.id).single().then(function(r){ myProfile = myProfile || r.data; }); return p.then(processInvite); }).then(pushProfile).catch(function(e){ console.warn('[mcu-social]', e); });
   }
   function start(){
     if (!MCU()) { console.warn('[mcu-social] window.MCU absent : as-tu bien fait les 2 modifications du tuto ?'); return; }
@@ -579,6 +628,7 @@
     if (modal) new MutationObserver(function(){ decorateModal(false); }).observe(modal, { childList: true });
     injectNavButton();
     // lien direct depuis une page film : /ordre-chronologique-marvel?film=iron-man ouvre la fiche
+    captureInvite();
     var deep = new URLSearchParams(location.search).get('film');
     if (deep && MCU().itemById(deep)) setTimeout(function(){ MCU().openItem(deep); }, 300);
     window.addEventListener('mcu:saved', schedulePush);
