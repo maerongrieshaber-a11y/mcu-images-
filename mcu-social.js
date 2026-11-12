@@ -303,15 +303,16 @@
     } else {
       h += '<h2>Salut <span class="gold">'+esc(myProfile ? nameOf(myProfile) : '')+'</span></h2>';
       h += '<div class="mcs-tabs">'
-        + [['feed','Fil d\'actu'],['friends','Mes amis'+(incoming.length?' · '+incoming.length+' demande'+(incoming.length>1?'s':''):'')],['add','Ajouter'],['account','Mon compte']].map(function(t){ return '<button data-a="tab" data-v="'+t[0]+'" class="'+(panelTab===t[0]?'on':'')+'">'+t[1]+'</button>'; }).join('')
+        + [['feed','Fil d\'actu'],['rank','🏆 Classement'],['friends','Mes amis'+(incoming.length?' · '+incoming.length+' demande'+(incoming.length>1?'s':''):'')],['add','Ajouter'],['account','Mon compte']].map(function(t){ return '<button data-a="tab" data-v="'+t[0]+'" class="'+(panelTab===t[0]?'on':'')+'">'+t[1]+'</button>'; }).join('')
         + '</div>';
       if (panelMsg) h += '<div class="mcs-msg">'+panelMsg+'</div>';
-      h += '<div id="mcs-body">'+(panelTab==='feed' ? '<div class="mcs-muted">Chargement…</div>' : panelTab==='friends' ? renderFriends() : panelTab==='add' ? renderAdd() : (panelTab==='friend' || panelTab==='compare') ? '<div class="mcs-muted">Chargement…</div>' : renderAccount())+'</div>';
+      h += '<div id="mcs-body">'+(panelTab==='feed' ? '<div class="mcs-muted">Chargement…</div>' : panelTab==='friends' ? renderFriends() : panelTab==='add' ? renderAdd() : (panelTab==='friend' || panelTab==='compare' || panelTab==='rank') ? '<div class="mcs-muted">Chargement…</div>' : renderAccount())+'</div>';
     }
     o.innerHTML = h + '</div>';
     if (me && panelTab === 'feed') renderFeed();
     if (me && panelTab === 'friend') renderFriendProfile();
     if (me && panelTab === 'compare') renderCompare();
+    if (me && panelTab === 'rank') renderRanking();
   }
   function renderAuth(){
     return '<h2>Rejoins la <span class="gold">communauté</span></h2>'
@@ -357,6 +358,47 @@
       + '<h3>Mes données</h3><p class="mcs-muted">Tu peux télécharger tout ce que le site garde sur toi, ou supprimer définitivement ton compte (profil, amis, vus, notes et progression en ligne). <a class="mcs-link" href="/confidentialite" target="_blank" rel="noopener">En savoir plus</a></p>'
       + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mcs-btn" data-a="export">Télécharger mes données</button><button class="mcs-btn danger" data-a="delacc">Supprimer mon compte</button></div>'
       + '<p class="mcs-muted" style="margin-top:14px">Connecté avec '+esc(me.email||'')+'</p>';
+  }
+  /* ---- classement entre amis ---- */
+  var rankSort = 'xp', rankProfiles = null, rankAt = 0;
+  function renderRanking(){
+    var b = document.getElementById('mcs-body'), m = MCU(); if (!b || !m) return;
+    if (!rankProfiles || Date.now() - rankAt > 60000) {
+      var ids = friends.map(function(f){ return f.id; });
+      if (!ids.length) { rankProfiles = []; rankAt = Date.now(); return drawRanking(); }
+      return sb.from('profiles').select('id,username,display_name,avatar_url,profile_data').in('id', ids).then(function(r){
+        rankProfiles = r.data || []; rankAt = Date.now(); drawRanking();
+      });
+    }
+    drawRanking();
+  }
+  function drawRanking(){
+    var b = document.getElementById('mcs-body'), m = MCU(); if (!b || !m || panelTab !== 'rank') return;
+    var items = m.mcuItems ? m.mcuItems() : [], total = items.length, mineP = m.profilePayload ? m.profilePayload() : {}, mw = m.state.watched || {};
+    var seenBy = {}; Object.keys(friendData).forEach(function(it){ friendData[it].forEach(function(e){ if (e.watched) { (seenBy[e.uid] = seenBy[e.uid] || {})[it] = true; } }); });
+    function cnt(w){ return items.filter(function(i){ return w && w[i.id]; }).length; }
+    var rows = [{ me: true, p: myProfile || { username: 'Toi' }, lvl: mineP.lvl || 1, lvlName: mineP.lvlName || '', xp: mineP.xp || 0, ach: mineP.ach || 0, seen: cnt(mw) }];
+    (rankProfiles || []).forEach(function(p){ var d = p.profile_data || {}; rows.push({ p: p, lvl: d.lvl || 1, lvlName: d.lvlName || '', xp: d.xp || 0, ach: d.ach || 0, seen: cnt(seenBy[p.id]) }); });
+    var key = rankSort === 'seen' ? 'seen' : rankSort === 'ach' ? 'ach' : 'xp';
+    rows.sort(function(a, c){ return (c[key] - a[key]) || (c.xp - a.xp) || (c.seen - a.seen); });
+    var myRank = 0; rows.forEach(function(x, i){ if (x.me) myRank = i; });
+    var unit = { xp: 'XP', seen: 'vus', ach: 'trophées' }[key];
+    var lead;
+    if (rows.length < 2) lead = 'Ajoute des amis pour lancer le classement !';
+    else if (myRank === 0) { var gap = rows[0][key] - rows[1][key]; lead = gap ? 'Tu es <strong>1er</strong> avec <strong>' + gap + ' ' + unit + '</strong> d\'avance sur ' + esc(nameOf(rows[1].p)) + '.' : 'Tu es <strong>1er</strong>, à égalité avec ' + esc(nameOf(rows[1].p)) + ' !'; }
+    else { var up = rows[myRank - 1], g2 = up[key] - rows[myRank][key]; lead = 'Tu es <strong>' + (myRank + 1) + 'e sur ' + rows.length + '</strong>. ' + (g2 ? 'Encore <strong>' + g2 + ' ' + unit + '</strong> pour dépasser ' + esc(nameOf(up.p)) + '.' : 'Égalité avec ' + esc(nameOf(up.p)) + ' : un dernier effort !'); }
+    var h = '<div class="mcs-rk-sort">' + [['xp', 'XP'], ['seen', 'Contenus vus'], ['ach', 'Trophées']].map(function(s){ return '<button data-a="rksort" data-v="' + s[0] + '" class="' + (key === s[0] ? 'on' : '') + '">' + s[1] + '</button>'; }).join('') + '</div>'
+      + '<div class="mcs-msg">' + lead + '</div><ol class="mcs-rk">';
+    var medals = ['🥇', '🥈', '🥉'];
+    rows.forEach(function(x, i){
+      var val = key === 'seen' ? x.seen + '<small>/' + total + '</small>' : key === 'ach' ? x.ach + '<small> 🏆</small>' : x.xp + '<small> XP</small>';
+      h += '<li class="' + (x.me ? 'me' : '') + (i < 3 ? ' top' : '') + '"><span class="mcs-rk-n">' + (medals[i] || (i + 1)) + '</span>' + avatarHtml(x.p)
+        + '<div class="mcs-rk-who">' + (x.me ? '<strong>Toi</strong>' : '<button class="mcs-link" data-a="compare" data-v="' + esc(x.p.id) + '"><strong>' + esc(nameOf(x.p)) + '</strong></button>')
+        + '<div class="mcs-muted">Niv. ' + x.lvl + (x.lvlName ? ' · ' + esc(x.lvlName) : '') + ' · ' + x.seen + '/' + total + ' vus</div></div>'
+        + '<div class="mcs-rk-v">' + val + '</div></li>';
+    });
+    h += '</ol><p class="mcs-muted" style="margin-top:10px">Touche le nom d\'un ami pour lancer un défi. Le niveau et l\'XP de tes amis se mettent à jour quand ils utilisent le site.</p>';
+    b.innerHTML = h;
   }
   var currentFriend = null, currentCompare = null;
   /* ---- défi : compare ta progression avec un ami ---- */
@@ -424,7 +466,8 @@
   function val(id){ var e = document.getElementById(id); return e ? e.value.trim() : ''; }
   function act(a, v){
     if (a === 'close') return closePanel();
-    if (a === 'tab') { panelTab = v; panelMsg = ''; return renderPanel(); }
+    if (a === 'tab') { panelTab = v; panelMsg = ''; if (v === 'rank') rankProfiles = null; return renderPanel(); }
+    if (a === 'rksort') { rankSort = v; return drawRanking(); }
     if (a === 'openitem') { closePanel(); var m = MCU(); if (m) m.openItem(v); return; }
     if (a === 'seefriend') { return openFriendProfile(v); }
     if (a === 'compare') {

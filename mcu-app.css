@@ -728,3 +728,20 @@
 @keyframes mcuSpin { to { transform: rotate(360deg); } }
 @media (max-width: 640px) { #mcu-app .mcu-oyl-runner { width: 110px; } #mcu-app .mcu-oyl-say { bottom: 96px; } }
 @media (prefers-reduced-motion: reduce) { #mcu-app .mcu-oyl-runner img, #mcu-app .mcu-oyl-runner::after, #mcu-app .mcu-oyl-portal::before, #mcu-app .mcu-oyl-portal::after, #mcu-app .mcu-oyl-fimg { animation-duration: .01s; animation-iteration-count: 1; } #mcu-app .mcu-oyl-fimg { opacity: 1; } }
+
+/* ===== v18 : classement entre amis ===== */
+.mcs-tabs { overflow-x: auto; scrollbar-width: none; }
+.mcs-tabs::-webkit-scrollbar { display: none; }
+.mcs-tabs button { flex: 1 0 auto; }
+.mcs-rk-sort { display: flex; gap: 6px; margin: 0 0 12px; }
+.mcs-rk-sort button { padding: 6px 12px; border: none; border-radius: 999px; background: var(--mcs-fill); color: var(--mcs-label2); font: 500 13px/1.2 inherit; font-family: inherit; cursor: pointer; }
+.mcs-rk-sort button.on { background: var(--mcs-tint); color: #0B0B0E; font-weight: 600; }
+.mcs-rk { list-style: none; padding: 0; margin: 10px 0 0; }
+.mcs-rk li { display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin: 0 0 6px; background: var(--mcs-fill2); border-radius: 14px; }
+.mcs-rk li.top { background: linear-gradient(90deg, rgba(232,196,104,.16), var(--mcs-fill2) 70%); }
+.mcs-rk li.me { box-shadow: inset 0 0 0 1.5px var(--mcs-tint); }
+.mcs-rk-n { flex: 0 0 28px; text-align: center; font-size: 18px; font-weight: 700; color: var(--mcs-label2); }
+.mcs-rk-who { flex: 1 1 auto; min-width: 0; }
+.mcs-rk-who .mcs-muted { font-size: 12px; }
+.mcs-rk-v { font-size: 20px; font-weight: 700; white-space: nowrap; }
+.mcs-rk-v small { font-size: 12px; font-weight: 500; opacity: .7; }
