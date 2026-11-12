@@ -766,3 +766,9 @@
 @media (max-width: 700px) {
   #mcu-app .filters .mcu-frow { flex-wrap: nowrap !important; overflow-x: auto !important; row-gap: 0; padding-bottom: 2px; }
 }
+
+/* ===== v23 : filtres telephone, menus vraiment par-dessus, defilement horizontal seulement ===== */
+#mcu-app .mcu-dd-menu.mcu-float { position: fixed !important; z-index: 1000; opacity: 1 !important; transform: none !important; filter: none !important; pointer-events: auto !important; }
+@media (max-width: 700px) {
+  #mcu-app .filters .mcu-frow { overflow-y: hidden !important; overscroll-behavior-x: contain; }
+}
