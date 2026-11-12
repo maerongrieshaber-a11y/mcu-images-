@@ -313,6 +313,7 @@
     if (me && panelTab === 'friend') renderFriendProfile();
     if (me && panelTab === 'compare') renderCompare();
     if (me && panelTab === 'rank') renderRanking();
+    if (me && panelTab === 'add' && !inviteCode) inviteLink();
   }
   function renderAuth(){
     return '<h2>Rejoins la <span class="gold">communauté</span></h2>'
@@ -359,21 +360,26 @@
     qs.delete('ami'); qs.delete('c');
     try { history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs.toString() : '') + location.hash); } catch(e){}
   }
+  function inviteUrl(){ return location.origin + '/invitation?ami=' + encodeURIComponent((myProfile && myProfile.username) || '') + (inviteCode ? '&c=' + inviteCode : ''); }
   function inviteLink(){
-    var base = location.origin + '/?ami=' + encodeURIComponent((myProfile && myProfile.username) || '');
-    if (inviteCode) return Promise.resolve(base + '&c=' + inviteCode);
-    return sb.rpc('my_invite_code').then(function(r){ if (!r.error && r.data) inviteCode = r.data; return base + (inviteCode ? '&c=' + inviteCode : ''); }, function(){ return base; });
+    if (inviteCode) return Promise.resolve(inviteUrl());
+    return sb.rpc('my_invite_code').then(function(r){ if (!r.error && r.data) inviteCode = r.data; return inviteUrl(); }, function(){ return inviteUrl(); });
   }
   function copyText(t){
     if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
     return new Promise(function(ok){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch(e){} a.remove(); ok(); });
   }
+  var lastInvite = '';
+  function inviteMsg(link){ setMsg('Ton lien d\'invitation personnel :<div class="mcs-invlink">' + esc(link) + '</div><button class="mcs-btn" data-a="copyinv">📋 Copier le lien</button>'); }
   function shareInvite(){
-    return inviteLink().then(function(link){
-      var txt = 'Rejoins-moi sur MCU Timeline : on suit nos films et séries Marvel et on se compare !';
-      if (navigator.share) return navigator.share({ title: 'MCU Timeline', text: txt, url: link }).catch(function(){});
-      return copyText(link).then(function(){ setMsg('Lien copié ✔ Colle-le dans un message à ton ami.<br><span class="mcs-muted">' + esc(link) + '</span>'); });
-    });
+    // le code doit etre deja charge : sur iPhone, le partage doit partir immediatement apres le toucher
+    if (!inviteCode) return inviteLink().then(function(link){ lastInvite = link; inviteMsg(link); });
+    var link = lastInvite = inviteUrl();
+    // le lien est DANS le texte : certaines applis (Insta, Snap...) ignorent le champ « url » du partage
+    var txt = 'Rejoins-moi sur MCU Timeline : on suit nos films et séries Marvel et on se compare ! Ouvre ce lien pour qu\'on soit amis directement : ' + link;
+    if (navigator.share) { navigator.share({ title: 'MCU Timeline', text: txt }).catch(function(){}); }
+    else { copyText(link).then(function(){ miniToast('Lien copié ✔ Colle-le dans un message à ton ami.'); }); }
+    inviteMsg(link);
   }
   function processInvite(){
     var inv = pendingInvite(); if (!inv || !me) return;
@@ -550,6 +556,7 @@
       });
     }
     if (a === 'share') { return shareInvite(); }
+    if (a === 'copyinv') { return copyText(lastInvite).then(function(){ miniToast('Lien copié ✔'); }); }
     if (a === 'search') {
       var q = val('mcs-search').replace(/^@/, '').replace(/[%_]/g, '');
       if (q.length < 2) return;

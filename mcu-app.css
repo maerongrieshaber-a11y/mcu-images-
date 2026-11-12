@@ -758,3 +758,6 @@
   #mcu-app .mcu-frow { flex-wrap: wrap !important; overflow: visible !important; row-gap: 8px; padding-bottom: 0; }
   #mcu-app .mcu-dd-menu { max-width: calc(100vw - 32px); }
 }
+
+/* ===== v21 : lien d'invitation visible ===== */
+.mcs-invlink { margin: 8px 0 10px; padding: 9px 12px; border-radius: 10px; background: var(--mcs-fill); font: 500 12px/1.4 ui-monospace, Menlo, monospace; color: #EDEAE3; word-break: break-all; -webkit-user-select: all; user-select: all; }
