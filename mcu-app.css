@@ -752,3 +752,9 @@
 #mcu-app .mcu-oneimg { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(232,196,104,.5); background: rgba(232,196,104,.08); color: #E8C468; font: 600 14px/1.2 Inter, system-ui, sans-serif; text-decoration: none; transition: background .2s, transform .15s; }
 #mcu-app .mcu-oneimg:hover { background: rgba(232,196,104,.18); }
 #mcu-app .mcu-oneimg:active { transform: scale(.97); }
+
+/* ===== v20 : filtres sur telephone, menus deroulants plus caches ===== */
+@media (max-width: 700px) {
+  #mcu-app .mcu-frow { flex-wrap: wrap !important; overflow: visible !important; row-gap: 8px; padding-bottom: 0; }
+  #mcu-app .mcu-dd-menu { max-width: calc(100vw - 32px); }
+}
