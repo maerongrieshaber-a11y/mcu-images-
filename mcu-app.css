@@ -709,3 +709,22 @@
 
   .mcs-toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:9600; background:rgba(28,28,30,.92); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); color:#fff; font:500 14px -apple-system,BlinkMacSystemFont,Inter,sans-serif; padding:12px 18px; border-radius:14px; border:.5px solid rgba(255,255,255,.15); box-shadow:0 12px 40px rgba(0,0,0,.5); transition:opacity .5s; }
   .mcs-toast.out { opacity:0; }
+
+/* ===== v15 : « Sur ta gauche » (Cap qui court + Falcon sorti d'un portail) ===== */
+#mcu-app .mcu-oyl-runner { width: 150px; height: auto; bottom: 6px; right: -170px; animation: mcuRun 4.2s linear forwards; }
+#mcu-app .mcu-oyl-runner img { display: block; width: 100%; height: auto; transform-origin: 50% 90%; animation: mcuCapStride .34s ease-in-out infinite; filter: drop-shadow(10px 6px 8px rgba(0,0,0,.45)); }
+#mcu-app .mcu-oyl-runner::after { content: ""; position: absolute; left: 70%; bottom: 4px; width: 70px; height: 14px; border-radius: 50%; background: radial-gradient(ellipse, rgba(200,190,170,.45), transparent 70%); animation: mcuCapDust .34s ease-out infinite; }
+#mcu-app .mcu-oyl-say { bottom: 128px; left: 10px; }
+@keyframes mcuCapStride { 0%,100% { transform: translateY(0) rotate(-4deg) scaleY(1); } 25% { transform: translateY(-9px) rotate(-1deg) scaleY(1.02); } 50% { transform: translateY(0) rotate(-5deg) scaleY(.97); } 75% { transform: translateY(-7px) rotate(-2deg) scaleY(1.01); } }
+@keyframes mcuCapDust { from { opacity: .9; transform: translateX(0) scale(.6); } to { opacity: 0; transform: translateX(40px) scale(1.4); } }
+#mcu-app .mcu-sx-oyl .mcu-oyl-falcon { position: relative; width: min(500px, 86vw, 66vh); aspect-ratio: 900 / 801; animation: none; }
+#mcu-app .mcu-oyl-portal { position: absolute; left: 50%; top: 52%; width: min(360px, 66vw); aspect-ratio: 1; border-radius: 50%; transform: translate(-50%,-50%) scale(0); background: radial-gradient(circle, rgba(8,5,18,.96) 0 57%, rgba(255,150,40,.35) 60%, transparent 63%); box-shadow: 0 0 0 5px #ff9b2a, 0 0 34px 12px rgba(255,130,0,.8), inset 0 0 46px rgba(255,140,0,.75); animation: mcuPortal 4.4s cubic-bezier(.2,.8,.2,1) forwards; }
+#mcu-app .mcu-oyl-portal::before { content: ""; position: absolute; inset: -16px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #ffe08a 0 2.5deg, transparent 2.5deg 11deg); -webkit-mask: radial-gradient(circle, transparent 60%, #000 62%, #000 69%, transparent 71%); mask: radial-gradient(circle, transparent 60%, #000 62%, #000 69%, transparent 71%); animation: mcuSpin .9s linear infinite; }
+#mcu-app .mcu-oyl-portal::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 3px dashed rgba(255,214,120,.85); animation: mcuSpin 2.2s linear infinite reverse; }
+#mcu-app .mcu-oyl-fimg { position: absolute; inset: 0; width: 100%; height: auto; z-index: 1; opacity: 0; filter: drop-shadow(0 14px 34px rgba(0,0,0,.65)); animation: mcuFalconOut 1.5s cubic-bezier(.2,.8,.2,1) .55s forwards, mcuHover 2.6s ease-in-out 2.1s infinite; }
+@keyframes mcuPortal { 0% { transform: translate(-50%,-50%) scale(0); opacity: 1; } 14% { transform: translate(-50%,-50%) scale(1.08); } 20%, 78% { transform: translate(-50%,-50%) scale(1); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(0); opacity: 0; } }
+@keyframes mcuFalconOut { 0% { opacity: 0; transform: scale(.12) translateY(12%); filter: brightness(2.2) drop-shadow(0 0 30px rgba(255,150,40,.9)); } 30% { opacity: 1; } 100% { opacity: 1; transform: scale(1) translateY(0); filter: drop-shadow(0 14px 34px rgba(0,0,0,.65)); } }
+@keyframes mcuHover { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+@keyframes mcuSpin { to { transform: rotate(360deg); } }
+@media (max-width: 640px) { #mcu-app .mcu-oyl-runner { width: 110px; } #mcu-app .mcu-oyl-say { bottom: 96px; } }
+@media (prefers-reduced-motion: reduce) { #mcu-app .mcu-oyl-runner img, #mcu-app .mcu-oyl-runner::after, #mcu-app .mcu-oyl-portal::before, #mcu-app .mcu-oyl-portal::after, #mcu-app .mcu-oyl-fimg { animation-duration: .01s; animation-iteration-count: 1; } #mcu-app .mcu-oyl-fimg { opacity: 1; } }
