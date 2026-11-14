@@ -331,11 +331,11 @@
     var h = '';
     if (incoming.length) {
       h += '<h3 style="margin:4px 0">Demandes reçues</h3>';
-      incoming.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1"><strong>'+esc(nameOf(p))+'</strong> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="accept" data-v="'+p.friendship_id+'">Accepter</button><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Refuser</button></div>'; });
+      incoming.forEach(function(p){ h += '<div class="mcs-row mcs-fr">'+avatarHtml(p)+'<div style="flex:1"><strong>'+esc(nameOf(p))+'</strong> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="accept" data-v="'+p.friendship_id+'">Accepter</button><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Refuser</button></div>'; });
     }
     h += '<h3 style="margin:14px 0 4px">Mes amis ('+friends.length+')</h3>';
     if (!friends.length) h += '<div class="mcs-muted">Pas encore d\'amis. Va dans l\'onglet « Ajouter ».</div>';
-    friends.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1"><button class="mcs-link" data-a="seefriend" data-v="'+p.id+'">'+esc(nameOf(p))+'</button> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="compare" data-v="'+p.id+'">⚔️ Comparer</button><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Retirer</button></div>'; });
+    friends.forEach(function(p){ h += '<div class="mcs-row mcs-fr">'+avatarHtml(p)+'<div style="flex:1"><button class="mcs-link" data-a="seefriend" data-v="'+p.id+'">'+esc(nameOf(p))+'</button> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="compare" data-v="'+p.id+'">⚔️ Comparer</button><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Retirer</button></div>'; });
     if (outgoing.length) {
       h += '<h3 style="margin:14px 0 4px">Demandes envoyées</h3>';
       outgoing.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1">'+esc(nameOf(p))+' <span class="mcs-muted">en attente</span></div><button class="mcs-btn" data-a="remove" data-v="'+p.friendship_id+'">Annuler</button></div>'; });
