@@ -772,3 +772,15 @@
 @media (max-width: 700px) {
   #mcu-app .filters .mcu-frow { overflow-y: hidden !important; overscroll-behavior-x: contain; }
 }
+
+/* ===== v24 : bouton Devenir ami sur un profil partage ===== */
+#mcu-app #mcu-sp-friend { text-align: center; margin: 4px 0 22px; }
+#mcu-app .mcs-spf-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border: 0; border-radius: 999px; background: linear-gradient(135deg, #E8C468, #C9A24B); color: #14110A; font: 800 16px/1.2 Inter, system-ui, sans-serif; cursor: pointer; box-shadow: 0 6px 24px rgba(232,196,104,.35); transition: transform .15s; }
+#mcu-app .mcs-spf-btn:active { transform: scale(.97); }
+#mcu-app .mcs-spf-btn:disabled { opacity: .7; }
+#mcu-app .mcs-spf-ok { display: inline-block; padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(110,200,140,.5); color: #7FD69A; font: 700 15px/1.2 Inter, system-ui, sans-serif; }
+#mcu-app .mcs-spf-note { margin-top: 8px; color: #9AA0AA; font: 400 12.5px/1.4 Inter, system-ui, sans-serif; }
+
+/* ===== v24 : selection multiple mise en avant (1er bouton des filtres) ===== */
+#mcu-app .filters .mcu-selbtn { order: -1; flex-shrink: 0; border-color: #E8C468 !important; color: #14110A !important; background: linear-gradient(135deg, #E8C468, #C9A24B) !important; font-weight: 700; }
+#mcu-app .filters .mcu-selbtn.on { background: rgba(232,196,104,.12) !important; color: #E8C468 !important; }
