@@ -353,14 +353,51 @@
   var INV_KEY = 'mcu_invite', inviteCode = null, invitePrompted = false;
   function pendingInvite(){ try { return JSON.parse(localStorage.getItem(INV_KEY) || 'null'); } catch(e){ return null; } }
   function clearInvite(){ try { localStorage.removeItem(INV_KEY); } catch(e){} }
+  var profInvite = null;
   function captureInvite(){
     var qs = new URLSearchParams(location.search), u = qs.get('ami');
     if (!u) return;
-    try { localStorage.setItem(INV_KEY, JSON.stringify({ u: u.replace(/^@/, ''), c: qs.get('c') || '' })); } catch(e){}
+    var inv = { u: u.replace(/^@/, ''), c: qs.get('c') || '' };
+    // lien de profil (avec la carte du profil) : on affiche un bouton « Devenir ami » au lieu d'ajouter tout seul
+    if (/mcu-profile=/.test(location.hash)) profInvite = inv;
+    else { try { localStorage.setItem(INV_KEY, JSON.stringify(inv)); } catch(e){} }
     qs.delete('ami'); qs.delete('c');
     try { history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs.toString() : '') + location.hash); } catch(e){}
   }
-  function inviteUrl(){ return location.origin + '/invitation?ami=' + encodeURIComponent((myProfile && myProfile.username) || '') + (inviteCode ? '&c=' + inviteCode : ''); }
+  function inviteUrl(){
+    var h = ''; try { h = '#' + MCU().shareUrl().split('#')[1]; } catch(e){}
+    return location.origin + '/invitation?ami=' + encodeURIComponent((myProfile && myProfile.username) || '') + (inviteCode ? '&c=' + inviteCode : '') + (h.length > 1 ? h : '');
+  }
+  function sendInvite(link){
+    // le lien est DANS le texte : certaines applis (Insta, Snap...) ignorent le champ « url » du partage
+    var txt = 'Viens voir mon profil MCU Timeline et deviens mon ami : on suit nos films et séries Marvel et on se compare ! ' + link;
+    if (navigator.share) { navigator.share({ title: 'MCU Timeline', text: txt }).catch(function(){}); }
+    else { copyText(link).then(function(){ miniToast('Lien copié ✔ Colle-le dans un message à ton ami.'); }); }
+  }
+  // bouton « Partager mon profil » de la page Profil : meme lien que l'invitation
+  window.mcuSocialShareProfile = function(){
+    if (!me || !inviteCode || !myProfile || !myProfile.username) return false;
+    sendInvite(lastInvite = inviteUrl()); return true;
+  };
+  function isSelf(u){ return myProfile && String(u).toLowerCase() === String(myProfile.username).toLowerCase(); }
+  function friendCTA(){
+    var box = document.getElementById('mcu-sp-friend'); if (!box) return;
+    if (!profInvite || !/mcu-profile=/.test(location.hash) || (me && !myProfile)) { box.innerHTML = ''; return; }
+    if (isSelf(profInvite.u)) { box.innerHTML = '<div class="mcs-spf-note">C\'est ton propre lien : tes amis verront ce profil avec un bouton pour devenir ton ami.</div>'; return; }
+    var h1 = document.querySelector('#mcu-view-root .mcu-profile-hero h1'), nm = h1 ? h1.textContent : profInvite.u;
+    var isF = me && friends.some(function(f){ return String(f.username || '').toLowerCase() === profInvite.u.toLowerCase(); });
+    box.innerHTML = isF ? '<div class="mcs-spf-ok">✔ Vous êtes amis</div>'
+      : '<button type="button" class="mcs-spf-btn" data-spf="1">🤝 Devenir ami avec ' + esc(nm) + '</button>'
+        + (me ? '' : '<div class="mcs-spf-note">Crée ton compte gratuit ou connecte-toi : l\'ajout se fera automatiquement.</div>');
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('[data-spf]'); if (!t || !profInvite) return;
+    e.preventDefault();
+    try { localStorage.setItem(INV_KEY, JSON.stringify(profInvite)); } catch(err){}
+    if (!me) { panelTab = 'feed'; panelMsg = '👋 Crée ton compte ou connecte-toi : tu seras ajouté automatiquement en ami.'; renderPanel(); return; }
+    t.disabled = true; t.textContent = 'Ajout…';
+    var p = processInvite(); (p && p.then ? p : Promise.resolve()).then(friendCTA);
+  });
   function inviteLink(){
     if (inviteCode) return Promise.resolve(inviteUrl());
     return sb.rpc('my_invite_code').then(function(r){ if (!r.error && r.data) inviteCode = r.data; return inviteUrl(); }, function(){ return inviteUrl(); });
@@ -375,17 +412,14 @@
     // le code doit etre deja charge : sur iPhone, le partage doit partir immediatement apres le toucher
     if (!inviteCode) return inviteLink().then(function(link){ lastInvite = link; inviteMsg(link); });
     var link = lastInvite = inviteUrl();
-    // le lien est DANS le texte : certaines applis (Insta, Snap...) ignorent le champ « url » du partage
-    var txt = 'Rejoins-moi sur MCU Timeline : on suit nos films et séries Marvel et on se compare ! Ouvre ce lien pour qu\'on soit amis directement : ' + link;
-    if (navigator.share) { navigator.share({ title: 'MCU Timeline', text: txt }).catch(function(){}); }
-    else { copyText(link).then(function(){ miniToast('Lien copié ✔ Colle-le dans un message à ton ami.'); }); }
+    sendInvite(link);
     inviteMsg(link);
   }
   function processInvite(){
     var inv = pendingInvite(); if (!inv || !me) return;
     var uname = String(inv.u || '');
     if (!uname || (myProfile && uname.toLowerCase() === String(myProfile.username).toLowerCase())) { clearInvite(); return; }
-    function done(msg){ clearInvite(); return loadFriends().then(function(){ miniToast(msg); panelMsg = msg; panelTab = 'friends'; if (!document.getElementById('mcs-overlay')) { var o = document.createElement('div'); o.id = 'mcs-overlay'; o.onclick = function(e){ if (e.target === o) closePanel(); }; document.body.appendChild(o); } renderPanel(); }); }
+    function done(msg){ clearInvite(); return loadFriends().then(function(){ friendCTA(); miniToast(msg); panelMsg = msg; panelTab = 'friends'; if (!document.getElementById('mcs-overlay')) { var o = document.createElement('div'); o.id = 'mcs-overlay'; o.onclick = function(e){ if (e.target === o) closePanel(); }; document.body.appendChild(o); } renderPanel(); }); }
     var viaCode = inv.c ? sb.rpc('accept_invite', { p_code: inv.c }) : Promise.resolve({ error: { message: 'no code' } });
     return viaCode.then(function(r){
       if (!r.error && r.data) { if (r.data.self) { clearInvite(); return; } return done('🤝 Vous êtes maintenant amis avec ' + (r.data.name || uname) + ' !'); }
@@ -625,7 +659,7 @@
       if (pendingInvite() && !invitePrompted) { invitePrompted = true; setTimeout(function(){ panelTab = 'feed'; panelMsg = '👋 Un ami t\'a invité ! Crée ton compte ou connecte-toi : vous serez ajoutés automatiquement en amis.'; renderPanel(); }, 900); }
       return; }
     sb.from('profiles').select('*').eq('id', me.id).single().then(function(r){ myProfile = r.data; if (document.getElementById('mcs-overlay')) { panelTab = 'feed'; renderPanel(); } });
-    initialSync().then(loadFriends).then(function(){ var p = myProfile ? Promise.resolve() : sb.from('profiles').select('*').eq('id', me.id).single().then(function(r){ myProfile = myProfile || r.data; }); return p.then(processInvite); }).then(pushProfile).catch(function(e){ console.warn('[mcu-social]', e); });
+    initialSync().then(loadFriends).then(function(){ inviteLink(); friendCTA(); var p = myProfile ? Promise.resolve() : sb.from('profiles').select('*').eq('id', me.id).single().then(function(r){ myProfile = myProfile || r.data; }); return p.then(function(){ friendCTA(); return processInvite(); }); }).then(pushProfile).catch(function(e){ console.warn('[mcu-social]', e); });
   }
   function start(){
     if (!MCU()) { console.warn('[mcu-social] window.MCU absent : as-tu bien fait les 2 modifications du tuto ?'); return; }
@@ -633,6 +667,8 @@
     var nav = document.getElementById('mcu-nav-root'), modal = document.getElementById('mcu-modal-root');
     if (nav) new MutationObserver(injectNavButton).observe(nav, { childList: true });
     if (modal) new MutationObserver(function(){ decorateModal(false); }).observe(modal, { childList: true });
+    var vroot = document.getElementById('mcu-view-root');
+    if (vroot) new MutationObserver(function(){ if (document.getElementById('mcu-sp-friend') && !document.getElementById('mcu-sp-friend').childNodes.length) friendCTA(); }).observe(vroot, { childList: true });
     injectNavButton();
     // lien direct depuis une page film : /ordre-chronologique-marvel?film=iron-man ouvre la fiche
     captureInvite();
