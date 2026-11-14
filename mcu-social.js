@@ -322,8 +322,8 @@
   function renderAuth(){
     var mode = authMode || (pendingInvite() ? 'signup' : 'login'), su = mode === 'signup';
     var h = '<div class="mcs-tabs mcs-authtabs" role="tablist">'
-      + '<button role="tab" data-a="authmode" data-v="login" class="'+(su?'':'on')+'">🔑 Se connecter</button>'
-      + '<button role="tab" data-a="authmode" data-v="signup" class="'+(su?'on':'')+'">✨ Créer un compte</button></div>';
+      + '<button role="tab" data-a="authmode" data-v="login" class="'+(su?'':'on')+'">🔑 Connexion</button>'
+      + '<button role="tab" data-a="authmode" data-v="signup" class="'+(su?'on':'')+'">✨ Inscription</button></div>';
     if (su) {
       h += '<h2>Crée ton <span class="gold">compte</span></h2>'
         + '<p class="mcs-muted">Gratuit et facultatif : sauvegarde ta progression sur tous tes appareils, ajoute tes amis et compare-toi à eux.</p>';
