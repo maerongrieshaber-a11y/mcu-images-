@@ -797,3 +797,15 @@
   #mcs-overlay .mcs-fr > .mcs-btn:nth-of-type(1) { grid-area: b1; }
   #mcs-overlay .mcs-fr > .mcs-btn:last-child { grid-area: b2; }
 }
+
+/* ===== v26 : lignes amis sur une seule ligne aussi sur mobile + confirmation Retirer ===== */
+@media (max-width: 520px) {
+  #mcs-overlay .mcs-row.mcs-fr { grid-template-columns: 34px minmax(0,1fr) 92px 68px; grid-template-areas: none; column-gap: 8px; row-gap: 0; padding: 10px 12px; }
+  #mcs-overlay .mcs-fr > .mcs-av, #mcs-overlay .mcs-fr > div, #mcs-overlay .mcs-fr > .mcs-btn:nth-of-type(1), #mcs-overlay .mcs-fr > .mcs-btn:last-child { grid-area: auto; }
+  #mcs-overlay .mcs-fr > .mcs-av { width: 34px; height: 34px; }
+  #mcs-overlay .mcs-fr .mcs-btn { height: 34px; min-height: 34px; padding: 0 6px; font-size: 12px; }
+  #mcs-overlay .mcs-fr > div > .mcs-link, #mcs-overlay .mcs-fr > div > strong { font-size: 14px; }
+  #mcs-overlay .mcs-fr > div > .mcs-muted { font-size: 11.5px; }
+}
+#mcs-overlay .mcs-fr .mcs-btn.mcs-arm { background: #FF453A; color: #fff; animation: mcsArm .9s ease-in-out infinite alternate; }
+@keyframes mcsArm { from { filter: brightness(1); } to { filter: brightness(1.25); } }
