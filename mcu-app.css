@@ -820,3 +820,4 @@
 #mcs-overlay .mcs-authgo { width: 100%; min-height: 46px; margin-top: 14px; font-size: 16px; }
 #mcs-overlay .mcs-authswitch { text-align: center; margin: 12px 0 0; color: #9AA0AA; font-size: 13.5px; }
 #mcs-overlay .mcs-authswitch .mcs-link { font-weight: 600; }
+#mcs-overlay .mcs-authtabs { margin-right: 44px; }
