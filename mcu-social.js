@@ -335,7 +335,7 @@
     }
     h += '<h3 style="margin:14px 0 4px">Mes amis ('+friends.length+')</h3>';
     if (!friends.length) h += '<div class="mcs-muted">Pas encore d\'amis. Va dans l\'onglet « Ajouter ».</div>';
-    friends.forEach(function(p){ h += '<div class="mcs-row mcs-fr">'+avatarHtml(p)+'<div style="flex:1"><button class="mcs-link" data-a="seefriend" data-v="'+p.id+'">'+esc(nameOf(p))+'</button> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="compare" data-v="'+p.id+'">⚔️ Comparer</button><button class="mcs-btn danger" data-a="remove" data-v="'+p.friendship_id+'">Retirer</button></div>'; });
+    friends.forEach(function(p){ h += '<div class="mcs-row mcs-fr">'+avatarHtml(p)+'<div style="flex:1"><button class="mcs-link" data-a="seefriend" data-v="'+p.id+'">'+esc(nameOf(p))+'</button> <span class="mcs-muted">@'+esc(p.username)+'</span></div><button class="mcs-btn pri" data-a="compare" data-v="'+p.id+'">⚔️ Comparer</button><button class="mcs-btn danger" data-a="unfriend" data-n="'+esc(nameOf(p))+'" data-v="'+p.friendship_id+'">Retirer</button></div>'; });
     if (outgoing.length) {
       h += '<h3 style="margin:14px 0 4px">Demandes envoyées</h3>';
       outgoing.forEach(function(p){ h += '<div class="mcs-row">'+avatarHtml(p)+'<div style="flex:1">'+esc(nameOf(p))+' <span class="mcs-muted">en attente</span></div><button class="mcs-btn" data-a="remove" data-v="'+p.friendship_id+'">Annuler</button></div>'; });
@@ -643,6 +643,19 @@
   }
   document.addEventListener('click', function(e){
     var t = e.target.closest && e.target.closest('#mcs-overlay [data-a]');
+    if (t && t.getAttribute('data-a') === 'unfriend') {
+      // confirmation : 1er toucher = « Sûr ? », 2e toucher (dans les 4 s) = retrait
+      e.preventDefault();
+      if (!t.classList.contains('mcs-arm')) {
+        Array.prototype.forEach.call(document.querySelectorAll('#mcs-overlay .mcs-arm'), function(b){ b.classList.remove('mcs-arm'); b.textContent = 'Retirer'; });
+        t.classList.add('mcs-arm'); t.textContent = 'Sûr ?';
+        miniToast('Touche « Sûr ? » pour retirer ' + (t.getAttribute('data-n') || 'cet ami') + ' de tes amis');
+        clearTimeout(t._armT); t._armT = setTimeout(function(){ t.classList.remove('mcs-arm'); t.textContent = 'Retirer'; }, 4000);
+        return;
+      }
+      clearTimeout(t._armT); t.disabled = true; t.textContent = '…';
+      return act('remove', t.getAttribute('data-v'));
+    }
     if (t) { e.preventDefault(); act(t.getAttribute('data-a'), t.getAttribute('data-v')); }
   });
   document.addEventListener('keydown', function(e){
