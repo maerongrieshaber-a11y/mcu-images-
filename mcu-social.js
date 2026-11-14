@@ -308,24 +308,44 @@
       if (panelMsg) h += '<div class="mcs-msg">'+panelMsg+'</div>';
       h += '<div id="mcs-body">'+(panelTab==='feed' ? '<div class="mcs-muted">Chargement…</div>' : panelTab==='friends' ? renderFriends() : panelTab==='add' ? renderAdd() : (panelTab==='friend' || panelTab==='compare' || panelTab==='rank') ? '<div class="mcs-muted">Chargement…</div>' : renderAccount())+'</div>';
     }
+    var keep = {}; ['mcs-email','mcs-pass','mcs-user'].forEach(function(id){ var e = document.getElementById(id); if (e) keep[id] = e.value; });
+    ['mcs-cgu','mcs-age'].forEach(function(id){ var e = document.getElementById(id); if (e) keep[id] = e.checked; });
     o.innerHTML = h + '</div>';
+    Object.keys(keep).forEach(function(id){ var e = document.getElementById(id); if (!e) return; if (typeof keep[id] === 'boolean') e.checked = keep[id]; else e.value = keep[id]; });
     if (me && panelTab === 'feed') renderFeed();
     if (me && panelTab === 'friend') renderFriendProfile();
     if (me && panelTab === 'compare') renderCompare();
     if (me && panelTab === 'rank') renderRanking();
     if (me && panelTab === 'add' && !inviteCode) inviteLink();
   }
+  var authMode = null;   // 'login' | 'signup'
   function renderAuth(){
-    return '<h2>Rejoins la <span class="gold">communauté</span></h2>'
-      + '<p class="mcs-muted">Crée un compte pour sauvegarder ta progression sur tous tes appareils, ajouter tes amis et voir ce qu\'ils regardent.</p>'
-      + (panelMsg ? '<div class="mcs-msg">'+panelMsg+'</div>' : '')
-      + '<label for="mcs-email">E-mail</label><input id="mcs-email" type="email" autocomplete="email">'
-      + '<label for="mcs-pass">Mot de passe (8 caractères min.)</label><input id="mcs-pass" type="password" autocomplete="current-password">'
-      + '<label for="mcs-user">Pseudo (seulement pour l\'inscription : 3-24 lettres, chiffres, . _ -)</label><input id="mcs-user" type="text" autocomplete="nickname">'
-      + '<div class="mcs-consent"><label class="mcs-check"><input id="mcs-cgu" type="checkbox"> <span>Pour créer un compte : j\'accepte les <a href="/conditions-utilisation" target="_blank" rel="noopener">conditions d\'utilisation</a> et j\'ai lu la <a href="/confidentialite" target="_blank" rel="noopener">politique de confidentialité</a>.</span></label>'
-      + '<label class="mcs-check"><input id="mcs-age" type="checkbox"> <span>J\'ai 15 ans ou plus, ou un parent est d\'accord pour que je crée ce compte.</span></label></div>'
-      + '<p class="mcs-muted" style="margin:0 4px 12px">Le compte est facultatif : tout le site fonctionne sans. Il sert seulement à retrouver ta progression sur plusieurs appareils et à jouer avec tes amis.</p>'
-      + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="mcs-btn pri" data-a="login">Se connecter</button><button class="mcs-btn" data-a="signup">Créer un compte</button><button class="mcs-link" data-a="reset">Mot de passe oublié ?</button></div>';
+    var mode = authMode || (pendingInvite() ? 'signup' : 'login'), su = mode === 'signup';
+    var h = '<div class="mcs-tabs mcs-authtabs" role="tablist">'
+      + '<button role="tab" data-a="authmode" data-v="login" class="'+(su?'':'on')+'">🔑 Se connecter</button>'
+      + '<button role="tab" data-a="authmode" data-v="signup" class="'+(su?'on':'')+'">✨ Créer un compte</button></div>';
+    if (su) {
+      h += '<h2>Crée ton <span class="gold">compte</span></h2>'
+        + '<p class="mcs-muted">Gratuit et facultatif : sauvegarde ta progression sur tous tes appareils, ajoute tes amis et compare-toi à eux.</p>';
+    } else {
+      h += '<h2>Content de te <span class="gold">revoir</span> 👋</h2>'
+        + '<p class="mcs-muted">Connecte-toi pour retrouver ta progression, tes amis et ton classement.</p>';
+    }
+    if (panelMsg) h += '<div class="mcs-msg">'+panelMsg+'</div>';
+    if (su) h += '<label for="mcs-user">Pseudo <span class="mcs-muted">(3-24 lettres, chiffres, . _ -)</span></label><input id="mcs-user" type="text" autocomplete="nickname">';
+    h += '<label for="mcs-email">E-mail</label><input id="mcs-email" type="email" autocomplete="email">'
+      + '<label for="mcs-pass">Mot de passe' + (su ? ' <span class="mcs-muted">(8 caractères min.)</span>' : '') + '</label><input id="mcs-pass" type="password" autocomplete="' + (su ? 'new-password' : 'current-password') + '">';
+    if (su) {
+      h += '<div class="mcs-consent"><label class="mcs-check"><input id="mcs-cgu" type="checkbox"> <span>J\'accepte les <a href="/conditions-utilisation" target="_blank" rel="noopener">conditions d\'utilisation</a> et j\'ai lu la <a href="/confidentialite" target="_blank" rel="noopener">politique de confidentialité</a>.</span></label>'
+        + '<label class="mcs-check"><input id="mcs-age" type="checkbox"> <span>J\'ai 15 ans ou plus, ou un parent est d\'accord pour que je crée ce compte.</span></label></div>'
+        + '<button class="mcs-btn pri mcs-authgo" data-a="signup">✨ Créer mon compte</button>'
+        + '<p class="mcs-authswitch">Déjà un compte ? <button class="mcs-link" data-a="authmode" data-v="login">Se connecter</button></p>';
+    } else {
+      h += '<button class="mcs-btn pri mcs-authgo" data-a="login">🔑 Se connecter</button>'
+        + '<p class="mcs-authswitch"><button class="mcs-link" data-a="reset">Mot de passe oublié ?</button></p>'
+        + '<p class="mcs-authswitch">Pas encore de compte ? <button class="mcs-link" data-a="authmode" data-v="signup">Créer un compte</button></p>';
+    }
+    return h + '<p class="mcs-muted" style="margin:14px 4px 0;font-size:12px">Le compte est facultatif : tout le site fonctionne sans.</p>';
   }
   function renderFriends(){
     var h = '';
@@ -562,6 +582,14 @@
         if (currentCompare && currentCompare.id === v) { currentCompare.prof = (r && r.data) || {}; renderCompare(); }
       });
     }
+    if (a === 'authmode') {
+      var em = val('mcs-email'), pw = (document.getElementById('mcs-pass') || {}).value || '';
+      authMode = v; panelMsg = ''; renderPanel();
+      var e1 = document.getElementById('mcs-email'), p1 = document.getElementById('mcs-pass');
+      if (e1) e1.value = em; if (p1) p1.value = pw;
+      var f = document.getElementById(v === 'signup' ? 'mcs-user' : (em ? 'mcs-pass' : 'mcs-email')); if (f) { try { f.focus({ preventScroll: true }); } catch(err){} }
+      return;
+    }
     if (a === 'login') {
       return sb.auth.signInWithPassword({ email: val('mcs-email'), password: val('mcs-pass') }).then(function(r){ if (r.error) setMsg(esc(traduire(r.error.message))); });
     }
@@ -571,7 +599,7 @@
       if (!(document.getElementById('mcs-cgu') || {}).checked) return setMsg('Coche la case d\'acceptation des conditions d\'utilisation pour créer un compte.');
       if (!(document.getElementById('mcs-age') || {}).checked) return setMsg('Pour créer un compte, il faut avoir 15 ans ou l\'accord d\'un parent.');
       return sb.auth.signUp({ email: val('mcs-email'), password: val('mcs-pass'), options: { data: { username: u, display_name: u, cgu_version: '2026-11-04', cgu_accepted_at: new Date().toISOString() }, emailRedirectTo: location.origin + location.pathname } })
-        .then(function(r){ if (r.error) return setMsg(esc(traduire(r.error.message))); if (!r.data.session) setMsg('📧 Compte créé ! Clique sur le lien reçu par e-mail pour l\'activer, puis reviens te connecter.'); });
+        .then(function(r){ if (r.error) return setMsg(esc(traduire(r.error.message))); if (!r.data.session) { authMode = 'login'; setMsg('📧 Compte créé ! Clique sur le lien reçu par e-mail pour l\'activer, puis reviens ici pour te connecter.'); } });
     }
     if (a === 'reset') {
       if (!val('mcs-email')) return setMsg('Indique ton e-mail ci-dessus.');
