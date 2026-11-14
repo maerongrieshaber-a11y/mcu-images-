@@ -813,3 +813,10 @@
 /* ===== v26 : cartes - filtres sur une ligne + son des paquets discret ===== */
 #mcu-app .filters .mcu-sndbtn { flex-shrink: 0; min-width: 0; padding: 0 12px; font-size: 16px; opacity: .75; }
 #mcu-app .filters .mcu-sndbtn:hover { opacity: 1; }
+
+/* ===== v27 : connexion / inscription bien distinctes ===== */
+#mcs-overlay .mcs-authtabs button { padding: 10px 8px; font-size: 14px; }
+#mcs-overlay .mcs-authtabs button.on { background: var(--mcs-tint, #E8C468); color: #1C1C1E; }
+#mcs-overlay .mcs-authgo { width: 100%; min-height: 46px; margin-top: 14px; font-size: 16px; }
+#mcs-overlay .mcs-authswitch { text-align: center; margin: 12px 0 0; color: #9AA0AA; font-size: 13.5px; }
+#mcs-overlay .mcs-authswitch .mcs-link { font-weight: 600; }
