@@ -784,3 +784,16 @@
 /* ===== v24 : selection multiple mise en avant (1er bouton des filtres) ===== */
 #mcu-app .filters .mcu-selbtn { order: -1; flex-shrink: 0; border-color: #E8C468 !important; color: #14110A !important; background: linear-gradient(135deg, #E8C468, #C9A24B) !important; font-weight: 700; }
 #mcu-app .filters .mcu-selbtn.on { background: rgba(232,196,104,.12) !important; color: #E8C468 !important; }
+
+/* ===== v25 : lignes amis alignees (boutons identiques) ===== */
+#mcs-overlay .mcs-row.mcs-fr { display: grid; grid-template-columns: 36px minmax(0,1fr) 116px 86px; align-items: center; column-gap: 10px; }
+#mcs-overlay .mcs-fr > div { min-width: 0; }
+#mcs-overlay .mcs-fr > div > .mcs-link, #mcs-overlay .mcs-fr > div > strong, #mcs-overlay .mcs-fr > div > .mcs-muted { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; padding: 0; }
+#mcs-overlay .mcs-fr .mcs-btn { width: 100%; height: 36px; min-height: 36px; margin: 0; padding: 0 10px; white-space: nowrap; font-size: 13px; line-height: 1; }
+@media (max-width: 520px) {
+  #mcs-overlay .mcs-row.mcs-fr { grid-template-columns: 40px minmax(0,1fr) 40px minmax(0,1fr); grid-template-areas: "av nm nm nm" "b1 b1 b2 b2"; row-gap: 10px; }
+  #mcs-overlay .mcs-fr > .mcs-av { grid-area: av; width: 40px; height: 40px; }
+  #mcs-overlay .mcs-fr > div { grid-area: nm; }
+  #mcs-overlay .mcs-fr > .mcs-btn:nth-of-type(1) { grid-area: b1; }
+  #mcs-overlay .mcs-fr > .mcs-btn:last-child { grid-area: b2; }
+}
